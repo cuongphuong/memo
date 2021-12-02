@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import "./App.css";
+import { searchFromGitHub } from "./API/Github/Request";
+import Loadding from './ViewComponents/Loadding';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const searchData = async () => {
+        var data = await searchFromGitHub("Learn");
+        console.log(data);
+    }
+
+    useEffect(() => {
+        searchData();
+    }, [])
+
+    return (
+        <div className="App">
+            <button onClick={searchData}>Click</button>
+            <Loadding/>
+        </div>
+    );
 }
 
 export default App;
