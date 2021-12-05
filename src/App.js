@@ -1,24 +1,40 @@
-import React, { useEffect } from 'react'
-import "./App.css";
-import { searchFromGitHub } from "./API/Github/Request";
-import Loadding from './ViewComponents/Loadding';
+import React, { useEffect, useState } from 'react'
+import Layout from './LayoutComponents/Layout';
+import QuickSearchTab from './LayoutComponents/QuickSearchTab';
+import ListTab from './LayoutComponents/ListTab';
+import WriterTab from './LayoutComponents/WriterTab';
 
 function App() {
 
-    const searchData = async () => {
-        var data = await searchFromGitHub("Learn");
-        console.log(data);
-    }
-
     useEffect(() => {
-        searchData();
+
     }, [])
 
+    const [tabIndex, setTabIndex] = useState("Search");
+
+    function rederTabView() {
+        switch (tabIndex) {
+            case "Search":
+                return <QuickSearchTab />
+            case "List":
+                return <ListTab />
+            case "Write":
+                return <WriterTab />
+            default:
+                return <QuickSearchTab />
+        }
+    }
+
     return (
-        <div className="App">
-            <button onClick={searchData}>Click</button>
-            <Loadding/>
-        </div>
+        <Layout>
+            <Layout.Header>
+                <Layout.Header.Item onPress={(title) => setTabIndex(title)} title="Search" />
+                <Layout.Header.Item onPress={(title) => setTabIndex(title)} title="List" />
+                <Layout.Header.Item onPress={(title) => setTabIndex(title)} title="Write" />
+            </Layout.Header>
+
+            {rederTabView()}
+        </Layout>
     );
 }
 

@@ -1,24 +1,25 @@
 export default function service(sendData) {
-    //
     const BASE_CONFIG = {
-        TOKEN_KEY: "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",
+        TOKEN_KEY: "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",
         BASE_URL: "https://api.github.com",
-        REPO: "repo:cuongphuong/memo_data"
     }
 
     async function send(config) {
-        //
-        let url = `${BASE_CONFIG.BASE_URL}/${sendData.url}+${BASE_CONFIG.REPO}`;
+        let url = `${BASE_CONFIG.BASE_URL}/${sendData.url}`;
         // make correct url
         url = url.replaceAll("//", "/");
         // send request
-        const json = await fetch(url, config)
-            .then(response => response.json());
-        return json;
+        try {
+            const json = await fetch(url, config)
+                .then(response => response.json());
+            return json;
+        } catch (err) {
+            console.log("Error network.");
+            return null;
+        }
     }
 
     async function request() {
-        //
         let headers = {
             Authorization: `Token ${BASE_CONFIG.TOKEN_KEY}`,
             Accept: "application/vnd.github.v3+json",
