@@ -5,6 +5,7 @@ import ListTab from './LayoutComponents/ListTab';
 import WriterTab from './LayoutComponents/WriterTab';
 
 function App() {
+    const [viewContentObj, setviewContentObj] = useState([]);
 
     useEffect(() => {
 
@@ -12,14 +13,19 @@ function App() {
 
     const [tabIndex, setTabIndex] = useState("Search");
 
+    function onSubmitSuccess(obj) {
+        setviewContentObj(obj);
+        setTabIndex("Search");
+    }
+
     function rederTabView() {
         switch (tabIndex) {
             case "Search":
-                return <QuickSearchTab />
+                return <QuickSearchTab defaultViewObj={{ viewContentObj, setviewContentObj }} />
             case "List":
                 return <ListTab />
             case "Write":
-                return <WriterTab />
+                return <WriterTab onSubmitSuccess={onSubmitSuccess} />
             default:
                 return <QuickSearchTab />
         }

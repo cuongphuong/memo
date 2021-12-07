@@ -1,6 +1,6 @@
 export default function service(sendData) {
     const BASE_CONFIG = {
-        TOKEN_KEY: "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",
+        TOKEN_KEY: "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",
         BASE_URL: "https://api.github.com",
     }
 
@@ -31,7 +31,7 @@ export default function service(sendData) {
         }
 
         if (sendData.data !== null) {
-            configs = { ...configs, data: JSON.stringify(sendData.data) };
+            configs = { ...configs, body: sendData.data };
         }
 
         let result = await send(configs);
