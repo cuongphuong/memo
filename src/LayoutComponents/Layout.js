@@ -19,14 +19,16 @@ const Header = ({ children }) => {
     );
 }
 
-const HeaderItem = ({ onPress, title, icon }) => {
-
-    function handleClickItem() {
-        onPress(title);
-    }
+const HeaderItem = ({ onClick, title, selected }) => {
 
     return (
-        <li><span onClick={handleClickItem}>{title}</span></li>
+        <li>
+            <span
+                className={selected === title ? "pg_mm_header-menu_selected" : ""}
+                onClick={() => onClick(title)}>
+                {title}
+            </span>
+        </li>
     );
 }
 
@@ -34,19 +36,28 @@ Header.Item = HeaderItem;
 
 const SiderBar = ({ children }) => {
     return (
-        <div className="pg_mm_left">
+        <div className="pg_mm_left pg_mm_scroll">
             {children}
         </div>
     );
 }
 
-const Content = ({ children }) => {
+const RightContent = ({ children }) => {
     return (
-        <div className="pg_mm_right">
+        <div className="pg_mm_right pg_mm_scroll">
             {children}
         </div>
     );
 }
+
+const MiddleContent = ({ children }) => {
+    return (
+        <div className="pg_mm_mid pg_mm_scroll">
+            {children}
+        </div>
+    );
+}
+
 
 const FullContent = ({ children }) => {
     return (
@@ -62,7 +73,8 @@ const Fooder = () => {
 
 Layout.Header = Header;
 Layout.SiderBar = SiderBar;
-Layout.Content = Content;
+Layout.RightContent = RightContent;
+Layout.MiddleContent = MiddleContent;
 Layout.FullContent = FullContent;
 Layout.Fooder = Fooder;
 export default Layout;

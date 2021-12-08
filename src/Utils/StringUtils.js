@@ -128,4 +128,12 @@ export class StringUtils {
         str = str.replace(/\s/g, "-");
         return str;
     }
+
+    static truncateString(str, num) {
+        if (str.length > num) {
+            return str.slice(0, num) + "...";
+        } else {
+            return str;
+        }
+    }
 }

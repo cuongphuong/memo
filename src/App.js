@@ -3,25 +3,29 @@ import Layout from './LayoutComponents/Layout';
 import QuickSearchTab from './LayoutComponents/QuickSearchTab';
 import ListTab from './LayoutComponents/ListTab';
 import WriterTab from './LayoutComponents/WriterTab';
+import { NotificationContainer } from 'react-notifications';
+
+import 'react-notifications/lib/notifications.css';
 
 function App() {
-    const [viewContentObj, setviewContentObj] = useState([]);
+    const menuList = ["Search", "List", "Write"];
+    // state
+    const [viewContentObj, setViewContentObj] = useState(null);
+    const [selectedMenu, setSelectedMenu] = useState(menuList[0]);
 
     useEffect(() => {
 
     }, [])
 
-    const [tabIndex, setTabIndex] = useState("Search");
-
     function onSubmitSuccess(obj) {
-        setviewContentObj(obj);
-        setTabIndex("Search");
+        setViewContentObj(obj);
+        setSelectedMenu(menuList[0]);
     }
 
     function rederTabView() {
-        switch (tabIndex) {
+        switch (selectedMenu) {
             case "Search":
-                return <QuickSearchTab defaultViewObj={{ viewContentObj, setviewContentObj }} />
+                return <QuickSearchTab props={{ viewContentObj, setViewContentObj }} />
             case "List":
                 return <ListTab />
             case "Write":
@@ -34,12 +38,18 @@ function App() {
     return (
         <Layout>
             <Layout.Header>
-                <Layout.Header.Item onPress={(title) => setTabIndex(title)} title="Search" />
-                <Layout.Header.Item onPress={(title) => setTabIndex(title)} title="List" />
-                <Layout.Header.Item onPress={(title) => setTabIndex(title)} title="Write" />
+                {menuList.map(item => <Layout.Header.Item
+                    key={item}
+                    selected={selectedMenu}
+                    onClick={(title) => setSelectedMenu(title)}
+                    title={item}
+                />)}
             </Layout.Header>
 
-            {rederTabView()}
+            <Layout.FullContent>
+                {rederTabView()}
+            </Layout.FullContent>
+            <NotificationContainer />
         </Layout>
     );
 }

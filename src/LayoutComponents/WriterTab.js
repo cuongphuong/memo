@@ -4,23 +4,26 @@ import MdEditor from 'react-markdown-editor-lite';
 import Layout from './Layout';
 import { getAllCategoryList, savePost } from '../API/Github/Request';
 import { StringUtils } from '../Utils/StringUtils';
+import { NotificationManager } from 'react-notifications';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
 
 export default function WriterTab({ onSubmitSuccess }) {
     const mdParser = new MarkdownIt();
-    const [categoryList, setCategoryList] = useState(["---"]);
+    const [categoryList, setCategoryList] = useState([]);
     const [content, setContent] = useState("");
     const titleInput = useRef(null);
     const categoryInput = useRef(null);
 
     useEffect(() => {
-        async function fetchCategoryList() {
-            var data = await getAllCategoryList();
+        let abortController = new AbortController();
+        getAllCategoryList().then(data => {
             setCategoryList(categoryList => ([categoryList, ...data]));
-        }
+        });
 
-        fetchCategoryList();
+        return () => {
+            abortController.abort();
+        }
     }, [])
 
     function handleImageUpload(file, callback) {
@@ -53,12 +56,17 @@ export default function WriterTab({ onSubmitSuccess }) {
         let category = categoryInput.current.value;
 
         if (StringUtils.trim(title, "") === "") {
-            alert("Please input title!!!")
+            NotificationManager.error("Please input title!!!");
             return;
         }
 
-        if (category === "---") {
-            alert("Please select category!!!")
+        if (StringUtils.trim(category, "") === "") {
+            NotificationManager.error("Please select category!!!");
+            return;
+        }
+
+        if (StringUtils.trim(content, "") === "" || StringUtils.trim(content, "").length < 50) {
+            NotificationManager.error("Please input content than 50 charactor!!!");
             return;
         }
 
@@ -78,13 +86,15 @@ export default function WriterTab({ onSubmitSuccess }) {
         fileContent += content;
 
         let data = {
-            message: `mm_project: add ${titleFix}.md`,
+            message: `mm_project: add ${StringUtils.truncateString(titleFix, 50)}.md`,
             content: StringUtils.base64Encode(fileContent)
         }
 
         let response = await savePost(data, filePath);
         if (response && response.commit) {
-            alert("Post thành công \n" + response.commit.html_url);
+            NotificationManager.info("Commited to \n" + response.commit.html_url, "Sucess commit Github repository.", 3000, function () {
+                window.open(response.commit.html_url, '_blank').focus();
+            }, false);
             onSubmitSuccess({
                 title: title,
                 content: content,
@@ -95,30 +105,32 @@ export default function WriterTab({ onSubmitSuccess }) {
     }
 
     return (
-        <Layout.FullContent>
-            <>
-                <input
-                    ref={titleInput}
-                    style={{ width: '75%' }}
-                    type="text" id="pg_mm_search_input"
-                    placeholder="Note title please input..."
+        <div className="pg_mm_amination">
+            <Layout.MiddleContent>
+                <>
+                    <input
+                        ref={titleInput}
+                        style={{ width: '78%' }}
+                        type="text" className="pg_mm_search_input"
+                        placeholder="Note title please input..."
+                    />
+                    {/* Render category select option */}
+
+                    <input className="pg_mm_search_input" ref={categoryInput} type="text" list="categoryList" style={{ width: '12%', marginLeft: '0.5%' }} />
+                    <datalist id="categoryList">
+                        {categoryList.map((item, index) => <option key={index}>{item}</option>)}
+                    </datalist>
+                    {/* Save button  */}
+                    <button onClick={handleSubmit} style={{ width: '9%', minWidth: 95, float: 'right', height: 40 }}>Submit</button>
+                </>
+                <div style={{ marginTop: '5px' }}></div>
+                <MdEditor
+                    onImageUpload={handleImageUpload}
+                    style={{ height: 'calc(100vh - 90px', width: '100%' }}
+                    renderHTML={text => mdParser.render(text)}
+                    onChange={({ html, text }) => setContent(text)}
                 />
-                {/* Render category select option */}
-                <select ref={categoryInput} style={{ width: '14%', marginLeft: '1%', height: 40 }}>
-                    {
-                        categoryList.map((item, index) => <option key={index} value={item}>{item}</option>)
-                    }
-                </select>
-                {/* Save button  */}
-                <button onClick={handleSubmit} style={{ width: '9%', minWidth: 95, float: 'right', height: 40 }}>Submit</button>
-            </>
-            <hr />
-            <MdEditor
-                onImageUpload={handleImageUpload}
-                style={{ height: 'calc(100vh - 90px', width: '100%' }}
-                renderHTML={text => mdParser.render(text)}
-                onChange={(text, html) => setContent(text)}
-            />
-        </Layout.FullContent>
+            </Layout.MiddleContent>
+        </div>
     )
 }

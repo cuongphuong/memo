@@ -1,6 +1,6 @@
 export default function service(sendData) {
     const BASE_CONFIG = {
-        TOKEN_KEY: "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",
+        TOKEN_KEY: "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",
         BASE_URL: "https://api.github.com",
     }
 

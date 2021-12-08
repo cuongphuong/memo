@@ -1,6 +1,7 @@
 import { searchFromGitHub, readContentByPath } from "../API/Github/Request";
 import { StringUtils } from "./StringUtils";
 import { Base64 } from "js-base64";
+import { NotificationManager } from 'react-notifications';
 export class ContentRender {
     // Delimiter between config and content
     static DEFAULT_DELIMITER = "---";
@@ -22,10 +23,12 @@ export class ContentRender {
             let totalCount = apiResult.total_count;
 
             if (!totalCount) {
-                console.log(`No file mapping result key [${str}]`)
+                console.log(`No file mapping result key [${str}]`);
+                NotificationManager.info(`No file mapping result key [${str}]`);
                 return;
             }
         } catch (error) {
+            NotificationManager.console.warning("Not response data from API.");
             console.error("Not response data from API.");
             return;
         }
