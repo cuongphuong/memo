@@ -8,7 +8,7 @@ import { NotificationManager } from 'react-notifications';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
 
-export default function WriterTab({ onSubmitSuccess }) {
+export default function WriterTab(props) {
     const mdParser = new MarkdownIt();
     const [categoryList, setCategoryList] = useState([]);
     const [content, setContent] = useState("");
@@ -71,7 +71,7 @@ export default function WriterTab({ onSubmitSuccess }) {
         }
 
         // correct data
-        // make data from form data to API body
+        // make data from form data for API body
         let id = new Date().getTime();
         let titleFix = StringUtils.nonAccentVietnamese(title);
         let filePath = `${category}/${titleFix}.md`;
@@ -86,16 +86,17 @@ export default function WriterTab({ onSubmitSuccess }) {
         fileContent += content;
 
         let data = {
-            message: `mm_project: add ${StringUtils.truncateString(titleFix, 50)}.md`,
+            message: `mm_project: add ${StringUtils.truncateString(titleFix, 25)}.md`,
             content: StringUtils.base64Encode(fileContent)
         }
 
         let response = await savePost(data, filePath);
         if (response && response.commit) {
-            NotificationManager.info("Commited to \n" + response.commit.html_url, "Sucess commit Github repository.", 3000, function () {
+            NotificationManager.info("Commited to \n" + response.commit.html_url, "Sucess commit Github repository.", 5000, function () {
                 window.open(response.commit.html_url, '_blank').focus();
             }, false);
-            onSubmitSuccess({
+
+            props.actionSubmit({
                 title: title,
                 content: content,
                 id: id,
@@ -121,7 +122,7 @@ export default function WriterTab({ onSubmitSuccess }) {
                         {categoryList.map((item, index) => <option key={index}>{item}</option>)}
                     </datalist>
                     {/* Save button  */}
-                    <button onClick={handleSubmit} style={{ width: '9%', minWidth: 95, float: 'right', height: 40 }}>Submit</button>
+                    <button onClick={handleSubmit} style={{ width: '9%', float: 'right', height: 40 }}>Submit</button>
                 </>
                 <div style={{ marginTop: '5px' }}></div>
                 <MdEditor

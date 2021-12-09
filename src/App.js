@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Layout from './LayoutComponents/Layout';
 import QuickSearchTab from './LayoutComponents/QuickSearchTab';
 import ListTab from './LayoutComponents/ListTab';
@@ -10,26 +10,28 @@ import 'react-notifications/lib/notifications.css';
 function App() {
     const menuList = ["Search", "List", "Write"];
     // state
-    const [viewContentObj, setViewContentObj] = useState(null);
-    const [selectedMenu, setSelectedMenu] = useState(menuList[0]);
+    const [selectedMenu, setSelectedMenu] = React.useState(menuList[0]);
+    const viewContentObj = React.useRef(null);
+    const setViewContentObj = (obj) => { viewContentObj.current = obj; }
 
-    useEffect(() => {
+    React.useEffect(() => {
 
-    }, [])
+    }, []);
 
     function onSubmitSuccess(obj) {
         setViewContentObj(obj);
+        // Back to search component
         setSelectedMenu(menuList[0]);
     }
 
     function rederTabView() {
         switch (selectedMenu) {
             case "Search":
-                return <QuickSearchTab props={{ viewContentObj, setViewContentObj }} />
+                return <QuickSearchTab defaultPost={viewContentObj.current} />
             case "List":
                 return <ListTab />
             case "Write":
-                return <WriterTab onSubmitSuccess={onSubmitSuccess} />
+                return <WriterTab actionSubmit={onSubmitSuccess} />
             default:
                 return <QuickSearchTab />
         }

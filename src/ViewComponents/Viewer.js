@@ -7,7 +7,9 @@ export default function Viewer({ source }) {
         <section className="section sec-html visible">
             <div className="section-container html-wrap">
                 <div className="custom-html-style">
-                    <ReactMarkdown children={source} remarkPlugins={[remarkGfm]} />
+                    <h1>{source.title}</h1>
+                    <hr />
+                    <ReactMarkdown children={source.content} remarkPlugins={[remarkGfm]} />
                 </div>
             </div>
         </section>

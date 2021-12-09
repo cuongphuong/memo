@@ -4,7 +4,7 @@ import Viewer from '../ViewComponents/Viewer';
 import { ContentRender } from '../Utils/ContentRender';
 import List from './List';
 
-export default function QuickSearchTab({ props }) {
+function QuickSearchTab(props) {
 
     const [mdContent, setMdContent] = useState("No content result ...");
     const [searchResultList, setSearchResultList] = useState([]);
@@ -14,23 +14,16 @@ export default function QuickSearchTab({ props }) {
     let doneTypingInterval = 600;  // time in ms (600ms)
 
     useEffect(() => {
-        // Cancel HTTP request 
-        const controller = new AbortController()
-        // Export properties from props
-        let { viewContentObj, setViewContentObj } = props;
 
-        if (viewContentObj) {
-            setMdContent(viewContentObj.content);
-            setSearchResultList(searchResultList => ([...searchResultList, viewContentObj]));
-            inputObj.current.value = "id:" + viewContentObj.id;
-
-            setViewContentObj(null);
+        // Set default view data if existed
+        if (props.defaultPost) {
+            setSearchResultList((searchResultList) => [...searchResultList, props.defaultPost]);
+            setMdContent(props.defaultPost);
         }
 
         inputObj.current.focus();
-
         return () => {
-            controller.abort();
+
         }
     }, [props])
 
@@ -52,9 +45,11 @@ export default function QuickSearchTab({ props }) {
 
     function handleChooseItem(source) {
         setActiveId(source.id);
-        setMdContent(source.content);
+        setMdContent(source);
     }
 
+
+    console.log("Re-render QuickTabSearch");
     return (
         <div className="pg_mm_amination">
             <Layout.SiderBar>
@@ -76,3 +71,5 @@ export default function QuickSearchTab({ props }) {
         </div>
     )
 }
+
+export default React.memo(QuickSearchTab);
