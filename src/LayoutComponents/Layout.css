@@ -20,7 +20,7 @@
 
 @keyframes example {
   0% {
-    margin-left: 150px;
+    margin-left: 200px;
   }
 
   100% {
@@ -206,4 +206,49 @@ button {
 
 button:hover {
   background-color: rgb(175, 89, 175);
+}
+
+/* --------------------------------------- */
+/* SubList item */
+.pg_mm_sublist_item {
+  display: inline-block;
+  background-color: #dcdcdc;
+  margin-right: 5px;
+  padding: 5px 20px;
+  /* border-radius: 25px; */
+  height: 35px;
+  box-sizing: border-box;
+  line-height: 25px;
+  cursor: pointer;
+  animation-name: example;
+  animation-duration: 0.5s;
+}
+
+.pg_mm_name_input {
+  height: 40px;
+  outline: none;
+  border: solid tomato 1px;
+  box-sizing: border-box;
+  position: absolute;
+  width: 500px;
+}
+
+.pg_mm_selected_path_item {
+  background-color: #dcdcdc;
+  display: inline-block;
+  height: 40px;
+  line-height: 38px;
+  margin: 0;
+  padding: 0;
+  margin-right: 2px;
+  padding: 0 5px;
+}
+
+.pg_mm_path_parent {
+  height: 41px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  /* background-color: wheat; */
 }

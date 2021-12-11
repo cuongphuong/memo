@@ -4,7 +4,6 @@ import QuickSearchTab from './LayoutComponents/QuickSearchTab';
 import ListTab from './LayoutComponents/ListTab';
 import WriterTab from './LayoutComponents/WriterTab';
 import { NotificationContainer } from 'react-notifications';
-
 import 'react-notifications/lib/notifications.css';
 
 function App() {

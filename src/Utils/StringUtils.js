@@ -9,7 +9,7 @@ export class StringUtils {
      * @returns true : if string is null or empty
      */
     static isNullOrEmpty(str) {
-        if (str == null || str === StringUtils.EMPTY) {
+        if (str === null || str === StringUtils.EMPTY) {
             return true;
         }
         return false;

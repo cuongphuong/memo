@@ -1,5 +1,5 @@
+import { StringUtils } from '../../Utils/StringUtils';
 import request from './ReuqestSender';
-import { GithubConst } from './GitHubConst';
 const REPOSITORY_SOURCE = "cuongphuong/memo_data";
 
 export function searchFromGitHub(key) {
@@ -18,20 +18,20 @@ export function readContentByPath(pathToFile) {
     return data;
 };
 
-export async function getAllCategoryList() {
+export async function getAllCategoryList(path) {
     let data = await request({
-        url: `/repos/${REPOSITORY_SOURCE}/git/trees/main`,
+        url: `/repos/${REPOSITORY_SOURCE}/contents/${path}`,
         method: "GET"
     });
 
-    if (!data || !data.tree || data.tree.length === 0) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
         return [];
     }
 
     let categoryList = [];
-    data.tree.forEach(item => {
-        if (item.mode === GithubConst.ST_MODE.DIRECTOTY) {
-            categoryList = [...categoryList, item.path];
+    data.forEach(item => {
+        if (item.type === "dir" && !StringUtils.isNullOrEmpty(item.name)) {
+            categoryList = [...categoryList, item.name];
         }
     });
 

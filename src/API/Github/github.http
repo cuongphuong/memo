@@ -13,9 +13,18 @@ Accept: application/vnd.github.v3+json
 ###
 
 GET https://api.github.com/repos/cuongphuong/memo_data/contents/Js/post1.json
-Authorization: Token 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
+Authorization: Token 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
 Accept: application/vnd.github.v3+json
 ###
 
 GET https://api.github.com/repos/cuongphuong/memo_data/git/trees/main
-Authorization: Token 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
+Authorization: Token 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
+
+###
+GET https://api.github.com/repos/cuongphuong/memo_data/contents
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
+###
+GET https://api.github.com/repos/cuongphuong/memo_data/contents/ReactJS?per_page=1&page=1
+Authorization: Token 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
+Accept: application/vnd.github.v3+json

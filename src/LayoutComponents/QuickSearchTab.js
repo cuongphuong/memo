@@ -14,7 +14,6 @@ function QuickSearchTab(props) {
     let doneTypingInterval = 600;  // time in ms (600ms)
 
     useEffect(() => {
-
         // Set default view data if existed
         if (props.defaultPost) {
             setSearchResultList((searchResultList) => [...searchResultList, props.defaultPost]);
@@ -26,7 +25,6 @@ function QuickSearchTab(props) {
 
         }
     }, [props])
-
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);
