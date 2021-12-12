@@ -96,7 +96,9 @@ export default function CategoryInput(props) {
 
         if (isFetching) {
             return (
-                <div style={{ position: "absolute", top: 6, zIndex: -1, color: "#cdcdcd" }}>Loadding...</div>
+                <div style={{ position: "absolute", top: 6, zIndex: -1, color: "#cdcdcd" }}>
+                    <img height="20px" src="./icon/blue_loading.gif" alt="loadding..." />
+                </div>
             )
         }
 

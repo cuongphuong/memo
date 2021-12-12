@@ -1,6 +1,6 @@
 export default function service(sendData) {
     const BASE_CONFIG = {
-        TOKEN_KEY: "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",
+        TOKEN_KEY: "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",
         BASE_URL: "https://api.github.com",
     }
 
@@ -11,7 +11,8 @@ export default function service(sendData) {
         // send request
         try {
             const json = await fetch(url, config)
-                .then(response => response.json());
+                .then(response => response.json())
+                .catch(err => Promise.reject(err));
             return json;
         } catch (err) {
             console.log("Error network.");

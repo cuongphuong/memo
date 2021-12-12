@@ -38,9 +38,40 @@ export async function getAllCategoryList(path) {
     return categoryList;
 }
 
+export async function getAllItemFromPath(path) {
+    let data = await request({
+        url: `/repos/${REPOSITORY_SOURCE}/contents/${path}`,
+        method: "GET"
+    });
+
+    if (!data || !Array.isArray(data) || data.length === 0) {
+        return [];
+    }
+
+    let resultObject = {
+        itemList: []
+    };
+
+    data.forEach(item => {
+        if (item.type === "dir" && !StringUtils.isNullOrEmpty(item.name)) {
+            resultObject = { ...resultObject, [item.name]: { hasContnent: false } }
+        }
+
+        if (item.type === "file" && !StringUtils.isNullOrEmpty(item.name)) {
+            resultObject = {
+                ...resultObject, itemList: [...resultObject.itemList, {
+                    name: item.name,
+                    path: item.path
+                }]
+            }
+
+        }
+    });
+
+    return resultObject;
+}
+
 export function savePost(data, filePath) {
-
-
     return request({
         url: `/repos/${REPOSITORY_SOURCE}/contents/${filePath}`,
         method: "PUT",

@@ -22,7 +22,6 @@ function QuickSearchTab(props) {
 
         inputObj.current.focus();
         return () => {
-
         }
     }, [props])
 
@@ -46,8 +45,6 @@ function QuickSearchTab(props) {
         setMdContent(source);
     }
 
-
-    console.log("Re-render QuickTabSearch");
     return (
         <div className="pg_mm_amination">
             <Layout.SiderBar>
