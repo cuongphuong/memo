@@ -1,9 +1,9 @@
 GET https://api.github.com/search/code?q=react+repo:cuongphuong/memo_data
-Authorization: Token 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
+Authorization: Token *
 ###
 
 PUT https://api.github.com/repos/cuongphuong/memo_data/contents/Js/post1.json
-Authorization: Token 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
+Authorization: Token *
 Accept: application/vnd.github.v3+json
 
 {
@@ -13,18 +13,18 @@ Accept: application/vnd.github.v3+json
 ###
 
 GET https://api.github.com/repos/cuongphuong/memo_data/contents/Js/post1.json
-Authorization: Token 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
+Authorization: Token *
 Accept: application/vnd.github.v3+json
 ###
 
 GET https://api.github.com/repos/cuongphuong/memo_data/git/trees/main
-Authorization: Token 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
+Authorization: Token *
 
 ###
 GET https://api.github.com/repos/cuongphuong/memo_data/contents
-Authorization: Token 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
+Authorization: Token *
 Accept: application/vnd.github.v3+json
 ###
 GET https://api.github.com/repos/cuongphuong/memo_data/contents/ParentTest1/test1.md?ref=main
-Authorization: Token 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
+Authorization: Token *
 Accept: application/vnd.github.v3+json

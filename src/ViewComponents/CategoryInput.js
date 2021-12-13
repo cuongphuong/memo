@@ -2,6 +2,9 @@ import React from "react";
 import { getAllCategoryList } from "../API/Github/Request";
 
 export default function CategoryInput(props) {
+    // use for control sync process
+    const refController = React.useRef(null);
+    //
     const nameInput = React.useRef("");
     const pathDataList = React.useRef([]);
     const [categoryList, setCategoryList] = React.useState([]);
@@ -16,13 +19,21 @@ export default function CategoryInput(props) {
     }
 
     React.useEffect(() => {
-        let abortController = new AbortController();
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
+        // fetch API
         getAllCategoryList("").then((data) => {
+            // check unmount component
+            if (signal.aborted) {
+                return;
+            }
             setCategoryList([...data]);
+        }).catch(err => {
+            console.log(err);
         });
 
         return () => {
-            abortController.abort();
+            refController.current.abort();
         };
     }, []);
 
@@ -42,7 +53,11 @@ export default function CategoryInput(props) {
             let lastItem = pathDataList.current.at(-1);
             // Update sub list from API
             setIsFetching(true);
+            refController.current = new AbortController();
+            let signal = refController.current.signal;
+            // fetch API
             getAllCategoryList(lastItem.path).then(subDataList => {
+
                 // Remove last item in list
                 let tmpList = [...pathDataList.current];
                 tmpList.pop();
@@ -50,8 +65,14 @@ export default function CategoryInput(props) {
                 lastItem = { ...lastItem, subList: subDataList }
                 tmpList.push(lastItem);
                 pathDataList.current = tmpList;
+                // check unmount component
+                if (signal.aborted) {
+                    return;
+                }
                 setPathRenderList(pathRenderList => tmpList);
                 setIsFetching(false);
+            }).catch(err => {
+                console.log(err);
             });
         } else {
             callback();
@@ -97,7 +118,10 @@ export default function CategoryInput(props) {
         if (isFetching) {
             return (
                 <div style={{ position: "absolute", top: 6, zIndex: -1, color: "#cdcdcd" }}>
-                    <img height="20px" src="./icon/blue_loading.gif" alt="loadding..." />
+                    <img height="20px"
+                        src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                        alt="loadding..."
+                    />
                 </div>
             )
         }

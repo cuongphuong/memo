@@ -43,15 +43,16 @@ function CategoryList({ children }) {
  */
 function Block(props) {
     // use for control sync process
-    let acontroller = React.useMemo(() => new AbortController(), []);
-    let signal = acontroller.signal;
+    const refController = React.useRef(null);
+    //
     const [categoryObj, setCategoryObj] = React.useState([]);
 
     React.useEffect(() => {
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
         getAllItemFromPath(props.name).then(data => {
             if (signal.aborted) {
-                const error = new DOMException('aborted!', 'AbortError');
-                return Promise.reject(error);
+                return;
             }
             setCategoryObj(data);
         }).catch(err => {
@@ -59,9 +60,9 @@ function Block(props) {
         });
 
         return () => {
-            acontroller.abort();
+            refController.current.abort();
         }
-    }, [acontroller, props.name, signal.aborted])
+    }, [props.name])
 
 
     function renderItem() {
@@ -71,9 +72,20 @@ function Block(props) {
 
         return (
             <>
-                {dirList.map((item, index) => <Row key={index} source={item} />)}
+                {dirList.map((item, index) => <Row
+                    handleItemClick={props.handleItemClick}
+                    key={index}
+                    source={item}
+                />)}
+
                 <dl className="link-list">
-                    {fileList.map((item, index) => <Item key={index} name={item.name} type={item.type} />)}
+                    {fileList.map((item, index) => <Item
+                        key={index}
+                        name={item.name}
+                        type={item.type}
+                        path={item.path}
+                        handleItemClick={props.handleItemClick}
+                    />)}
                 </dl>
             </>
         );
@@ -94,10 +106,9 @@ function Block(props) {
 /**
  * Row =====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
  */
-function Row({ source = { name: "", path: "", type: "" } }) {
+function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
     // use for control sync process
-    let acontroller = React.useMemo(() => new AbortController(), []);
-    let signal = acontroller.signal;
+    const refController = React.useRef(null);
     //
     const [categoryObject, setCategoryObject] = React.useState([]);
     const [sourcePath, setSourcePath] = React.useState(source.path);
@@ -105,23 +116,29 @@ function Row({ source = { name: "", path: "", type: "" } }) {
     const pathList = React.useRef([source.path]);
 
     React.useEffect(() => {
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
         getAllItemFromPath(sourcePath).then(data => {
             if (signal.aborted) {
-                const error = new DOMException('aborted!', 'AbortError');
-                return Promise.reject(error);
+                return;
             }
             // success API
             setCategoryObject(data);
             setIsLoadding(false);
         }).catch(err => {
+            console.log(err);
+            // check unmount component
+            if (signal.aborted) {
+                return;
+            }
+            setCategoryObject([]);
             setIsLoadding(false);
-            console.log(err)
         });
 
         return () => {
-            acontroller.abort();
+            refController.current.abort();
         }
-    }, [acontroller, signal.aborted, sourcePath]);
+    }, [sourcePath]);
 
     function gotoPath(path) {
         let index = pathList.current.indexOf(path);
@@ -129,17 +146,23 @@ function Row({ source = { name: "", path: "", type: "" } }) {
         pathList.current = tmpList;
         setSourcePath(path);
         setIsLoadding(true);
-
+        // fetch API
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
         getAllItemFromPath(sourcePath).then(data => {
             if (signal.aborted) {
-                const error = new DOMException('aborted!', 'AbortError');
-                return Promise.reject(error);
+                return;
             }
             setCategoryObject(data);
             setIsLoadding(false);
         }).catch(err => {
+            console.log("Fail to fetch data.");
+            // check unmount component
+            if (signal.aborted) {
+                return;
+            }
+            setCategoryObject([]);
             setIsLoadding(false);
-            console.log("Fail to fetch data.")
         });
     }
 
@@ -152,7 +175,11 @@ function Row({ source = { name: "", path: "", type: "" } }) {
         let renderList = makeRenderList(categoryObject, source.path);
 
         if (isLoadding) {
-            return (<img height="20px" src="./icon/blue_loading.gif" alt="loadding..." />)
+            return (<img
+                height="20px"
+                src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                alt="loadding..."
+            />);
         }
 
         return renderList.map((item, index) => <Item
@@ -160,6 +187,7 @@ function Row({ source = { name: "", path: "", type: "" } }) {
             name={item.name}
             type={item.type}
             path={item.path}
+            handleItemClick={handleItemClick}
             onClickSubFolder={(name) => onClickSubFolder(name)}
         />);
     }
@@ -200,6 +228,7 @@ function Item(props) {
     if (props.type === "file") {
         return (
             <p
+                onClick={() => props.handleItemClick(props.path)}
                 title={props.name} >
                 {props.name}
             </p>);

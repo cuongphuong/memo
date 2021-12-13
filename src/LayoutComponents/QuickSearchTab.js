@@ -5,6 +5,8 @@ import { ContentRender } from '../Utils/ContentRender';
 import List from './List';
 
 function QuickSearchTab(props) {
+    // use for control sync process
+    const refController = React.useRef(null);
 
     const [mdContent, setMdContent] = useState("No content result ...");
     const [searchResultList, setSearchResultList] = useState([]);
@@ -14,6 +16,7 @@ function QuickSearchTab(props) {
     let doneTypingInterval = 600;  // time in ms (600ms)
 
     useEffect(() => {
+        refController.current = new AbortController();
         // Set default view data if existed
         if (props.defaultPost) {
             setSearchResultList((searchResultList) => [...searchResultList, props.defaultPost]);
@@ -22,20 +25,32 @@ function QuickSearchTab(props) {
 
         inputObj.current.focus();
         return () => {
+            refController.current.abort();
         }
     }, [props])
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
         typingTimer.current = setTimeout(function () {
+            if (signal.aborted) {
+                return;
+            }
             setSearchResultList([]);
             doneTyping(evt.target.value)
         }, doneTypingInterval);
     }
 
     async function doneTyping(keyword) {
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
+        // fetch API
         let apiResultContentList = await ContentRender.search(keyword);
         if (apiResultContentList && apiResultContentList.length > 0) {
+            if (signal.aborted) {
+                return;
+            }
             setSearchResultList(apiResultContentList);
         }
     }

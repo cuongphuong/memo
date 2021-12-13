@@ -58,6 +58,11 @@ export class ContentRender {
      * @returns Content object from JSON content
      */
     static async makeContentObject(filePath) {
+        // Is invalid path
+        if (!filePath) {
+            return;
+        }
+
         let apiContentResult = await readContentByPath(filePath);
         let contentObject = {};
         if (apiContentResult && !StringUtils.isNullOrEmpty(apiContentResult.content)) {

@@ -1,36 +1,64 @@
 import React from 'react';
 import Layout from './Layout';
 import CategoryList from '../ViewComponents/CategoryList';
+import ViewPopup from './ViewPopup';
 import { getAllCategoryList } from '../API/Github/Request';
+import { ContentRender } from '../Utils/ContentRender';
 
 export default function ListTab() {
     // use for control sync process
-    let acontroller = React.useMemo(() => new AbortController(), []);
-    let signal = acontroller.signal;
+    const refController = React.useRef(null);
+    //
     const [categoryList, setCategoryList] = React.useState([]);
+    const [isDisplayPopup, setIsDisplayPopup] = React.useState("none");
+    const [dataView, setDataView] = React.useState(null);
 
     React.useEffect(() => {
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
+        // fetch API
         getAllCategoryList("").then(data => {
             if (signal.aborted) {
-                const error = new DOMException('aborted!', 'AbortError');
-                return Promise.reject(error);
+                return;
             }
-            setCategoryList(categoryList => data);
+            setCategoryList(data);
         }).catch(error => {
             console.log(error);
         });
 
         return () => {
-            acontroller.abort();
+            setDataView(null);
+            refController.current.abort();
         }
-    }, [acontroller, signal.aborted]);
+    }, []);
+
+    function handleItemClick(path) {
+        setIsDisplayPopup("block");
+        ContentRender.makeContentObject(path).then(data => {
+            setDataView(data);
+        });
+    }
+
+    function handleClosePopups() {
+        setTimeout(function () {
+            setIsDisplayPopup("none");
+        }, 300)
+        setDataView(null);
+    }
 
     return (
         <div className="pg_mm_amination">
             <Layout.MiddleContent >
                 <CategoryList>
-                    {categoryList.map((categoryName, index) => <CategoryList.Block key={index} name={categoryName} />)}
+                    {categoryList.map((categoryName, index) => <CategoryList.Block
+                        handleItemClick={handleItemClick}
+                        key={index}
+                        name={categoryName}
+                    />)}
                 </CategoryList>
+                <div className="pg_mm_view_popup_block">
+                    <ViewPopup onClose={handleClosePopups} source={dataView} display={isDisplayPopup} />
+                </div>
             </Layout.MiddleContent >
         </div>
     )

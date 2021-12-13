@@ -1,0 +1,58 @@
+.pg_mm_view_popup_block {
+  width: 100%;
+}
+
+.pg_mm_mid {
+  position: relative;
+}
+
+.pg_mm_loadding {
+  margin: 0 auto;
+}
+
+.pg_mm_view_popup {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #fff;
+  border-left: solid 1px #eee;
+  overflow: scroll;
+  padding: 0 10px;
+  animation-name: open;
+  animation-duration: 0.5s;
+}
+
+.pg_mm_view_cls_button {
+  cursor: pointer;
+  background-color: coral;
+  position: fixed;
+  right: 15px;
+  top: 65px;
+}
+
+@keyframes open {
+  0% {
+    margin-left: 200px;
+    opacity: 0;
+  }
+
+  100% {
+    margin-left: 0px;
+    opacity: 100%;
+  }
+}
+
+@keyframes close {
+  0% {
+    margin-left: 0px;
+    opacity: 100%;
+  }
+
+  100% {
+    margin-left: 200px;
+    opacity: 0;
+    display: none;
+  }
+}

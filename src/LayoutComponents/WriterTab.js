@@ -62,7 +62,7 @@ export default function WriterTab(props) {
         // correct data
         // make data from form data for API body
         let id = new Date().getTime();
-        let titleFix = StringUtils.nonAccentVietnamese(title.current);
+        let titleFix = /*StringUtils.nonAccentVietnamese(title.current);*/title.current;
         let filePath = `${category.current}/${StringUtils.truncateString(titleFix, 25)}.md`;
         filePath = filePath.replaceAll("//", "/");
 
