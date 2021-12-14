@@ -2,21 +2,45 @@ import React, { useState, useRef } from 'react';
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import Layout from './Layout';
-import { savePost } from '../API/Github/Request';
+import { save } from '../API/Github/Request';
 import { StringUtils } from '../Utils/StringUtils';
 import { NotificationManager } from 'react-notifications';
 import CategoryInput from '../ViewComponents/CategoryInput';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
+import { ContentRender } from '../Utils/ContentRender';
 
 export default function WriterTab(props) {
+    // use for control sync process
+    const refController = React.useRef(null);
+    //
     const mdParser = new MarkdownIt();
     const [content, setContent] = useState("");
     const title = useRef("");
     const category = useRef("");
 
-    // Valid folder name
-    // const folderNameRegex = /^[a-zA-Z0-9_-]*$/;
+    const { inputPath } = props;
+    React.useEffect(() => {
+        if (!inputPath) {
+            return;
+        }
+        //
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
+        // fetch API
+        ContentRender.makeContentObject(inputPath).then(data => {
+            if (signal.aborted) {
+                return;
+            }
+
+            if (!data) return;
+            // setContent(data.content);
+        });
+
+        return () => {
+            refController.current.abort();
+        }
+    }, [inputPath])
 
     function handleImageUpload(file, callback) {
         const reader = new FileReader()
@@ -80,7 +104,7 @@ export default function WriterTab(props) {
             content: StringUtils.base64Encode(fileContent)
         }
 
-        let response = await savePost(data, filePath);
+        let response = await save(data, filePath);
         if (response && response.commit) {
             NotificationManager.info("Commited to \n" + response.commit.html_url, "Sucess commit Github repository.", 5000, function () {
                 window.open(response.commit.html_url, '_blank').focus();
@@ -113,6 +137,7 @@ export default function WriterTab(props) {
                 </>
                 <div style={{ marginTop: '5px' }}></div>
                 <MdEditor
+                    value={content}
                     onImageUpload={handleImageUpload}
                     style={{ height: 'calc(100vh - 90px', width: '100%' }}
                     renderHTML={text => mdParser.render(text)}

@@ -2,7 +2,6 @@ import React from 'react';
 import Layout from './Layout';
 import CategoryList from '../ViewComponents/CategoryList';
 import ViewPopup from './ViewPopup';
-import { getAllCategoryList } from '../API/Github/Request';
 import { ContentRender } from '../Utils/ContentRender';
 
 export default function ListTab() {
@@ -17,7 +16,7 @@ export default function ListTab() {
         refController.current = new AbortController();
         let signal = refController.current.signal;
         // fetch API
-        getAllCategoryList("").then(data => {
+        ContentRender.getAllCategoryList("").then(data => {
             if (signal.aborted) {
                 return;
             }

@@ -1,5 +1,5 @@
 import React from "react";
-import { getAllCategoryList } from "../API/Github/Request";
+import { ContentRender } from "../Utils/ContentRender";
 
 export default function CategoryInput(props) {
     // use for control sync process
@@ -22,7 +22,7 @@ export default function CategoryInput(props) {
         refController.current = new AbortController();
         let signal = refController.current.signal;
         // fetch API
-        getAllCategoryList("").then((data) => {
+        ContentRender.getAllCategoryList("").then((data) => {
             // check unmount component
             if (signal.aborted) {
                 return;
@@ -56,7 +56,7 @@ export default function CategoryInput(props) {
             refController.current = new AbortController();
             let signal = refController.current.signal;
             // fetch API
-            getAllCategoryList(lastItem.path).then(subDataList => {
+            ContentRender.getAllCategoryList(lastItem.path).then(subDataList => {
 
                 // Remove last item in list
                 let tmpList = [...pathDataList.current];
@@ -102,7 +102,7 @@ export default function CategoryInput(props) {
         makeNewCategory(val + "/", function () {
             props.onChange(makeReturn());
         });
-        nameInput.current.value = "";
+        // nameInput.current.value = "";
         nameInput.current.focus();
     }
 

@@ -30,7 +30,7 @@ function App() {
             case "List":
                 return <ListTab />
             case "Write":
-                return <WriterTab actionSubmit={onSubmitSuccess} />
+                return <WriterTab inputPath="ReactJS/React%20Addon/react-notification.md" actionSubmit={onSubmitSuccess} />
             default:
                 return <QuickSearchTab />
         }

@@ -1,78 +1,48 @@
-import { StringUtils } from '../../Utils/StringUtils';
-import request from './ReuqestSender';
+import { RequestAPI as request } from '../../Utils/RequestAPI';
 const REPOSITORY_SOURCE = "cuongphuong/memo_data";
 
+// Request config
+request.add_config({
+    base_url: "https://api.github.com",
+    timeout: 10000,
+    in_headers: {
+        Authorization: "Token *",
+        Accept: "application/vnd.github.v3+json",
+    }
+});
+
+
+// Export API
+
+/**
+ * Search file match keyword result from Github repository
+ * @param {String} key Keyword for search code
+ * @returns Object Search file and infomation file
+ */
 export function searchFromGitHub(key) {
-    let data = request({
+    let result = request.exe({
         url: `/search/code?q=${key}+repo:${REPOSITORY_SOURCE}`,
         method: "GET"
     });
-    return data;
+    return result;
 };
 
 export function readContentByPath(pathToFile) {
-    let data = request({
+    let result = request.exe({
         url: `/repos/${REPOSITORY_SOURCE}/contents/${pathToFile}`,
         method: "GET"
     });
-    return data;
+    return result;
 };
 
-export async function getAllCategoryList(path) {
-    let data = await request({
-        url: `/repos/${REPOSITORY_SOURCE}/contents/${path}`,
-        method: "GET"
-    });
-
-    if (!data || !Array.isArray(data) || data.length === 0) {
-        return [];
-    }
-
-    let categoryList = [];
-    data.forEach(item => {
-        if (item.type === "dir" && !StringUtils.isNullOrEmpty(item.name)) {
-            categoryList = [...categoryList, item.name];
-        }
-    });
-
-    return categoryList;
-}
-
-export async function getAllItemFromPath(path) {
-    let data = await request({
-        url: `/repos/${REPOSITORY_SOURCE}/contents/${path}`,
-        method: "GET"
-    });
-
-    if (!data || !Array.isArray(data) || data.length === 0) {
-        return [];
-    }
-
-    let resultObject = {
-        itemList: []
-    };
-
-    data.forEach(item => {
-        if (item.type === "dir" && !StringUtils.isNullOrEmpty(item.name)) {
-            resultObject = { ...resultObject, [item.name]: { hasContnent: false } }
-        }
-
-        if (item.type === "file" && !StringUtils.isNullOrEmpty(item.name)) {
-            resultObject = {
-                ...resultObject, itemList: [...resultObject.itemList, {
-                    name: item.name,
-                    path: item.path
-                }]
-            }
-
-        }
-    });
-
-    return resultObject;
-}
-
-export function savePost(data, filePath) {
-    return request({
+/**
+ * Save a file into Git repository
+ * @param {Object} data Content of file, encode Base64 
+ * @param {String} filePath Path to file location
+ * @returns 
+ */
+export function save(data, filePath) {
+    return request.exe({
         url: `/repos/${REPOSITORY_SOURCE}/contents/${filePath}`,
         method: "PUT",
         data: JSON.stringify(data)

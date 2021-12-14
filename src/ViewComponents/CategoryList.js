@@ -1,7 +1,7 @@
 import React from 'react';
 import "./CategoryList.css"
 
-import { getAllItemFromPath } from '../API/Github/Request';
+import { ContentRender } from '../Utils/ContentRender';
 
 function makeRenderList(categoryObj, sourcePath) {
     let renderList = [];
@@ -50,7 +50,7 @@ function Block(props) {
     React.useEffect(() => {
         refController.current = new AbortController();
         let signal = refController.current.signal;
-        getAllItemFromPath(props.name).then(data => {
+        ContentRender.getAllItemFromPath(props.name).then(data => {
             if (signal.aborted) {
                 return;
             }
@@ -118,7 +118,7 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
     React.useEffect(() => {
         refController.current = new AbortController();
         let signal = refController.current.signal;
-        getAllItemFromPath(sourcePath).then(data => {
+        ContentRender.getAllItemFromPath(sourcePath).then(data => {
             if (signal.aborted) {
                 return;
             }
@@ -149,7 +149,7 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
         // fetch API
         refController.current = new AbortController();
         let signal = refController.current.signal;
-        getAllItemFromPath(sourcePath).then(data => {
+        ContentRender.getAllItemFromPath(sourcePath).then(data => {
             if (signal.aborted) {
                 return;
             }
@@ -226,11 +226,12 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
  */
 function Item(props) {
     if (props.type === "file") {
+        let title = props.name.replace(".md", "");
         return (
             <p
                 onClick={() => props.handleItemClick(props.path)}
-                title={props.name} >
-                {props.name}
+                title={title} >
+                {title}
             </p>);
     }
 

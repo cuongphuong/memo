@@ -63,6 +63,7 @@ export class ContentRender {
             return;
         }
 
+        filePath = filePath.trim();
         let apiContentResult = await readContentByPath(filePath);
         let contentObject = {};
         if (apiContentResult && !StringUtils.isNullOrEmpty(apiContentResult.content)) {
@@ -83,13 +84,15 @@ export class ContentRender {
             contentObject = { ...configs, content };
 
             return contentObject;
+        } else {
+            console.log("Can't load data for " + filePath);
         }
         return null;
     }
 
 
     /**
-     * 
+     * Make config object from content file result from API
      * @param {Strng} str Config area from API result to objectt
      * @returns Object configs
      */
@@ -110,5 +113,59 @@ export class ContentRender {
             configs = { ...configs, [configKey]: configValue };
         }
         return configs;
+    }
+
+    /**
+     * Get on category level 1 on Github repository
+     * @param {String} path path to resource
+     * @returns Array All categorys on level 1
+     */
+    static async getAllCategoryList(path) {
+        let result = await readContentByPath(path);
+        if (!result || !Array.isArray(result) || result.length === 0) {
+            return [];
+        }
+
+        let categoryList = [];
+        result.forEach(item => {
+            if (item.type === "dir" && !StringUtils.isNullOrEmpty(item.name)) {
+                categoryList = [...categoryList, item.name];
+            }
+        });
+
+        return categoryList;
+    }
+
+    /**
+     * Get file, dir from path resource in Git repository
+     * @param {String} path Path to resource for get data
+     * @returns Object File and Dir from resource
+     */
+    static async getAllItemFromPath(path) {
+        let result = await readContentByPath(path);
+
+        if (!result || !Array.isArray(result) || result.length === 0) {
+            return [];
+        }
+
+        let resultObject = {
+            itemList: []
+        };
+
+        result.forEach(item => {
+            if (item.type === "dir" && !StringUtils.isNullOrEmpty(item.name)) {
+                resultObject = { ...resultObject, [item.name]: { hasContnent: false } }
+            }
+
+            if (item.type === "file" && !StringUtils.isNullOrEmpty(item.name)) {
+                resultObject = {
+                    ...resultObject, itemList: [...resultObject.itemList, {
+                        name: item.name,
+                        path: item.path
+                    }]
+                }
+            }
+        });
+        return resultObject;
     }
 }

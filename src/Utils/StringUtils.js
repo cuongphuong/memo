@@ -9,7 +9,7 @@ export class StringUtils {
      * @returns true : if string is null or empty
      */
     static isNullOrEmpty(str) {
-        if (str === null || str === StringUtils.EMPTY) {
+        if (!str || str === null || str === StringUtils.EMPTY) {
             return true;
         }
         return false;
@@ -21,7 +21,7 @@ export class StringUtils {
      * @returns Base64 str
      */
     static base64Encode(str) {
-        if (str === null) {
+        if (!str || str === null) {
             return null;
         } else {
             return Base64.encode(str);
@@ -34,7 +34,7 @@ export class StringUtils {
      * @returns Value decode
      */
     static base64decode(str) {
-        if (str === null) {
+        if (!str || str === null) {
             return null;
         } else {
             return Base64.decode(str);
@@ -55,7 +55,7 @@ export class StringUtils {
 
         let ret = str;
 
-        if (ret == null) {
+        if (!ret || ret === null) {
             ret = "";
         }
         // remove ' ', '　', '\t'
@@ -81,7 +81,7 @@ export class StringUtils {
 
         let ret = str;
 
-        if (ret == null) {
+        if (!ret || ret === null) {
             ret = "";
         }
         // Delete " ", "　", and \t

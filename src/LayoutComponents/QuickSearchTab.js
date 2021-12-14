@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Layout from './Layout';
 import Viewer from '../ViewComponents/Viewer';
 import { ContentRender } from '../Utils/ContentRender';
-import List from './List';
+import List from '../ViewComponents/List';
 
 function QuickSearchTab(props) {
     // use for control sync process
