@@ -31,6 +31,7 @@ function QuickSearchTab(props) {
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);
+        //
         refController.current = new AbortController();
         let signal = refController.current.signal;
         typingTimer.current = setTimeout(function () {
@@ -46,11 +47,8 @@ function QuickSearchTab(props) {
         refController.current = new AbortController();
         let signal = refController.current.signal;
         // fetch API
-        let apiResultContentList = await ContentRender.search(keyword);
+        let apiResultContentList = await ContentRender.search(keyword, signal);
         if (apiResultContentList && apiResultContentList.length > 0) {
-            if (signal.aborted) {
-                return;
-            }
             setSearchResultList(apiResultContentList);
         }
     }

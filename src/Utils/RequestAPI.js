@@ -22,11 +22,15 @@ export const RequestAPI = (function () {
     }
 
     async function sendRequest(url, configs) {
-        console.log(`[${configs.method}] Request to ${url}`);
-
-        let json = await fetch(url, configs, timeout)
-            .then(response => response.json())
-            .catch(err => Promise.reject(err));
+        let json = await fetch(url, configs, timeout).then(function (response) {
+            if (!response.ok) {
+                throw new Error(response.status);
+            } else {
+                return response.json();
+            }
+        }).catch(err => {
+            throw new Error(err);
+        });
         return json;
     }
 
@@ -43,12 +47,7 @@ export const RequestAPI = (function () {
         let url = baseUrl + inp.url.replaceAll("//", "/");
         let requestConfig = makeRequestConfig(inp);
 
-        try {
-            return await sendRequest(url, requestConfig);
-        } catch (err) {
-            console.log("Error network.");
-            return null;
-        }
+        return await sendRequest(url, requestConfig);
     }
 
     return {

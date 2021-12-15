@@ -11,7 +11,7 @@ export class ContentRender {
      * @param {String} str Keyword for search
      * @returns List of content search
      */
-    static async search(str) {
+    static async search(str, signal) {
         if (StringUtils.isNullOrEmpty(str)) {
             console.log("Search keyword is empty");
             return;
@@ -19,7 +19,7 @@ export class ContentRender {
 
         let apiResult
         try {
-            apiResult = await searchFromGitHub(str);
+            apiResult = await searchFromGitHub(str, signal);
             let totalCount = apiResult.total_count;
 
             if (!totalCount) {

@@ -127,7 +127,6 @@ export default function CategoryInput(props) {
         }
 
         if (currentCtgList.length === 0) {
-
             let name = "root/";
             if (lastItem && lastItem.name) {
                 name = ".../" + lastItem.name;
