@@ -24,12 +24,28 @@
   animation-duration: 0.5s;
 }
 
-.pg_mm_view_cls_button {
+.pg_mm_view_cls_button,
+.pg_mm_view_edit_button,
+.pg_mm_view_delete_button {
   cursor: pointer;
-  background-color: coral;
   position: fixed;
-  right: 15px;
   top: 65px;
+  z-index: 2;
+}
+
+.pg_mm_view_cls_button {
+  right: 15px;
+  background-color: coral;
+}
+
+.pg_mm_view_edit_button {
+  right: 81px;
+  background-color: rgb(23, 248, 169);
+}
+
+.pg_mm_view_delete_button {
+  right: 135px;
+  background-color: rgb(247, 17, 67);
 }
 
 @keyframes open {

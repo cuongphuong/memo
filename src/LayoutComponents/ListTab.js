@@ -4,7 +4,7 @@ import CategoryList from '../ViewComponents/CategoryList';
 import ViewPopup from './ViewPopup';
 import { ContentRender } from '../Utils/ContentRender';
 
-export default function ListTab() {
+export default function ListTab(props) {
     // use for control sync process
     const refController = React.useRef(null);
     //
@@ -56,7 +56,13 @@ export default function ListTab() {
                     />)}
                 </CategoryList>
                 <div className="pg_mm_view_popup_block">
-                    <ViewPopup onClose={handleClosePopups} source={dataView} display={isDisplayPopup} />
+                    <ViewPopup
+                        onDelete={() => setIsDisplayPopup("none")}
+                        onEdit={(filePath) => props.onEdit(filePath)}
+                        onClose={handleClosePopups}
+                        source={dataView}
+                        display={isDisplayPopup}
+                    />
                 </div>
             </Layout.MiddleContent >
         </div>

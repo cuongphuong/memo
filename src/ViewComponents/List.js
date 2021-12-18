@@ -38,8 +38,8 @@ function ListItem({ source = {
             <h3 className="pg_mm_trunc">{source.title}</h3>
             <p className="pg_mm_trunc">{source.content}</p>
             <div className="pg_mm_list_item_info">
-                <span className="pg_mm_trunc">{`id:${source.id}`}</span>
-                <span className="pg_mm_trunc"><span>{truncPathListItem(source.category)}</span></span>
+                <span className="pg_mm_trunc">{`${source.id}`}</span>
+                <span className="pg_mm_trunc">{truncPathListItem(source.category)}</span>
             </div>
         </div>
     )

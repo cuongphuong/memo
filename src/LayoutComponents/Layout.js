@@ -21,6 +21,10 @@ const Header = ({ children }) => {
 
 const HeaderItem = ({ onClick, title, selected }) => {
 
+    if (title === "Settings") {
+        return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item'>⚙</p>
+    }
+
     return (
         <li>
             <span

@@ -57,14 +57,14 @@ export class ContentRender {
      * @param {String} filePath Path to file on Github
      * @returns Content object from JSON content
      */
-    static async makeContentObject(filePath) {
+    static async makeContentObject(filePath, signal) {
         // Is invalid path
         if (!filePath) {
             return;
         }
 
         filePath = filePath.trim();
-        let apiContentResult = await readContentByPath(filePath);
+        let apiContentResult = await readContentByPath(filePath, signal);
         let contentObject = {};
         if (apiContentResult && !StringUtils.isNullOrEmpty(apiContentResult.content)) {
             let base64Content = apiContentResult.content;
@@ -82,6 +82,7 @@ export class ContentRender {
             let configs = ContentRender.makeConfigFromResult(cfgAreaStr);
             let content = StringUtils.trim(contentAreaStr);
             contentObject = { ...configs, content };
+            contentObject = { ...contentObject, filePath: filePath };
 
             return contentObject;
         } else {
@@ -120,8 +121,8 @@ export class ContentRender {
      * @param {String} path path to resource
      * @returns Array All categorys on level 1
      */
-    static async getAllCategoryList(path) {
-        let result = await readContentByPath(path);
+    static async getAllCategoryList(path, signal) {
+        let result = await readContentByPath(path, signal);
         if (!result || !Array.isArray(result) || result.length === 0) {
             return [];
         }

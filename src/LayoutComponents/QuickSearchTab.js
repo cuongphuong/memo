@@ -10,6 +10,7 @@ function QuickSearchTab(props) {
 
     const [mdContent, setMdContent] = useState("No content result ...");
     const [searchResultList, setSearchResultList] = useState([]);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [activeId, setActiveId] = useState("");
     const inputObj = useRef(null);
     const typingTimer = useRef(null); // timer identifier 
@@ -47,15 +48,52 @@ function QuickSearchTab(props) {
         refController.current = new AbortController();
         let signal = refController.current.signal;
         // fetch API
+        setIsProcessing(true);
         let apiResultContentList = await ContentRender.search(keyword, signal);
         if (apiResultContentList && apiResultContentList.length > 0) {
             setSearchResultList(apiResultContentList);
         }
+        setIsProcessing(false);
     }
 
     function handleChooseItem(source) {
         setActiveId(source.id);
         setMdContent(source);
+    }
+
+    function renderSearchList() {
+        return (
+            <>
+                {
+                    searchResultList.length > 0 ?
+                        <List>
+                            {searchResultList.map((item, index) => <List.Item activeId={activeId}
+                                handleChooseItem={handleChooseItem}
+                                key={index}
+                                source={item}
+                            />)}
+                        </List>
+                        :
+                        <img className='unselectable' width="100%"
+                            src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/empty.png"
+                            alt="empty"
+                        />
+                }
+
+                {
+                    isProcessing ?
+                        <div className="pg_mm_search_loadding">
+                            <img height="45px"
+                                style={{ position: 'absolute', top: 110 }}
+                                src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                                alt="loadding..."
+                            />
+                        </div>
+                        :
+                        ''
+                }
+            </>
+        )
     }
 
     return (
@@ -69,12 +107,16 @@ function QuickSearchTab(props) {
                     placeholder="Type for search..."
                 />
                 <div style={{ marginTop: '5px' }}></div>
-                <List>
-                    {searchResultList.map((item, index) => <List.Item activeId={activeId} handleChooseItem={handleChooseItem} key={index} source={item} />)}
-                </List>
+                {renderSearchList()}
             </Layout.SiderBar>
             <Layout.RightContent>
                 <Viewer source={mdContent} />
+                <div className='pg_mm_logo'>
+                    <img width="350px"
+                        src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/logo.png"
+                        alt="loadding..."
+                    />
+                </div>
             </Layout.RightContent>
         </div>
     )

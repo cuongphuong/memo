@@ -1,24 +1,33 @@
 import { RequestAPI as request } from '../../Utils/RequestAPI';
-const REPOSITORY_SOURCE = "cuongphuong/memo_data";
+import { getSingleton as LocalCache } from '../../Utils/CacheManager';
+
+const CACHE_KEY = "pg_mm_settings";
+const cache = LocalCache(CACHE_KEY);
+const REPOSITORY_SOURCE = cache.has("urlRepository")
+    ? cache.get("urlRepository").replaceAll("https://github.com/", "")
+    : "";
+
+const TIME_OUT = cache.has("requestTimeout") ? "Token " + cache.get("requestTimeout") : "";
+const TOKEN_KEY = cache.has("accessKey") ? "Token " + cache.get("accessKey") : "";
+const USE_NAME = cache.has("userName") ? "Token " + cache.get("userName") : "";
+const E_MAIL = cache.has("email") ? "Token " + cache.get("email") : "";
 
 // Request config
 request.add_config({
     base_url: "https://api.github.com",
-    timeout: 10000,
+    timeout: TIME_OUT,
     in_headers: {
-        Authorization: "Token *",
+        Authorization: TOKEN_KEY,
         Accept: "application/vnd.github.v3+json",
     }
 });
 
 const author = {
-    name: "cuongphuong",
-    email: "cuongphuong.dtu@gmail.com"
+    name: USE_NAME,
+    email: E_MAIL
 }
 
-
 // Export API
-
 /**
  * Search file match keyword result from Github repository
  * @param {String} key Keyword for search code
@@ -42,11 +51,13 @@ export async function searchFromGitHub(key, signal) {
  * @param {String} path Path to resource
  * @returns Object
  */
-export async function readContentByPath(path) {
+export async function readContentByPath(path, signal) {
     let result = await request.exe({
         url: `/repos/${REPOSITORY_SOURCE}/contents/${path}`,
-        method: "GET"
+        method: "GET",
+        signal: signal
     }).catch(err => {
+        console.log(err)
         return null;
     });
 
@@ -152,8 +163,6 @@ export async function postTree(tree, base_tree) {
         method: "POST",
         data: JSON.stringify(payload)
     });
-
-    console.log(result);
     return result.sha;
 };
 

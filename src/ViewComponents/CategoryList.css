@@ -54,6 +54,8 @@
   display: block;
   padding: 2px 0;
   width: 150px;
+  max-width: 150px;
+  min-width: 150px;
   background-color: #eee;
   /* border-radius: 3px; */
   color: #333;
@@ -62,6 +64,7 @@
   text-align: center;
   float: left;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .pg_mm_category_list_main .link-list .link-bd {
@@ -99,6 +102,8 @@
 
 .pg_mm_path_item {
   cursor: pointer;
+  overflow: hidden;
+  display: inline-block;
   /* margin-right: 5px; */
 }
 

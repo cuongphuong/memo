@@ -1,12 +1,12 @@
 class CacheManager {
-    constructor(key, expire = 1200) {
+    constructor(key, expire = null) {
         this.key = key;
         this.expire = expire;
         this.items = this.getAll();
     }
 
     add(key, value) {
-        if (key && !this.has(key)) {
+        if (key) {
             this.items = { ...this.items, [key]: value }
             console.log('[CacheManager] add: ', key, this.items);
         }
@@ -21,12 +21,17 @@ class CacheManager {
     }
 
     has(key) {
-        return cache.hasOwnProperty(key);
+        return this.items.hasOwnProperty(key);
     }
 
     store() {
         localStorage.setItem(this.key, JSON.stringify(this.items));
         localStorage.setItem(this.key + ':ts', Date.now());
+    }
+
+    get(key) {
+        let all = this.getAll();
+        return all[key];
     }
 
     getAll() {
@@ -39,8 +44,8 @@ class CacheManager {
     isExpired() {
         let whenCached = localStorage.getItem(this.key + ':ts')
         let age = (Date.now() - whenCached) / 1000
-        console.log('[CacheManager] is Expired', age > this.expire);
-        if (age > this.expire) {
+        console.log('[CacheManager] is Expired', this.expire && age > this.expire);
+        if (this.expire && age > this.expire) {
             this.clear();
             return true;
         } else {
@@ -65,11 +70,11 @@ let cache = {};
  * [getSingleton description]
  * @method getSingleton
  * @param  {string}     key           Key for localStorage
- * @param  {Number}     [expire=1200] Expiration time in seconds
+ * @param  {Number}     [expire=null] Expiration time in seconds
  * @param  {String}     [sep=',']     separator in case. Default: ,
  * @return {CacheManager}             A singleton of CacheCollection
  */
-function getSingleton(key, expire = 1200) {
+function getSingleton(key, expire = null) {
     if (!cache.hasOwnProperty(key)) {
         cache[key] = new CacheManager(key, expire);
     }

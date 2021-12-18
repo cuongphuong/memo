@@ -19,14 +19,36 @@ export default function CategoryInput(props) {
     }
 
     React.useEffect(() => {
+        function makePathStr(list) {
+            if (list.length === 0) return "";
+
+            let path = "";
+            list.forEach(el => {
+                path += el.name;
+            });
+            return path;
+        }
+        // Set default title
+        nameInput.current.value = props.defaultTitle;
+        // Set default category
+        let categorys = props.defaultCategory.split("/");
+        categorys = categorys.filter(p => p !== "");
+        let categoryPathList = [];
+        categorys.forEach(element => {
+            element = { name: element + "/" };
+            element = { ...element, path: makePathStr(categoryPathList) + element.name }
+            element = { ...element, subList: [] }
+            categoryPathList.push(element);
+        });
+        pathDataList.current = categoryPathList;
+        setPathRenderList(categoryPathList);
+
+        // Make category list
         refController.current = new AbortController();
         let signal = refController.current.signal;
-        // fetch API
-        ContentRender.getAllCategoryList("").then((data) => {
+        ContentRender.getAllCategoryList("", signal).then((data) => {
             // check unmount component
-            if (signal.aborted) {
-                return;
-            }
+            if (signal.aborted) return;
             setCategoryList([...data]);
         }).catch(err => {
             console.log(err);
@@ -35,9 +57,9 @@ export default function CategoryInput(props) {
         return () => {
             refController.current.abort();
         };
-    }, []);
+    }, [props.defaultTitle, props.defaultCategory]);
 
-    function makeNewCategory(name, callback = function () { }) {
+    async function makeNewCategory(name, callback = function () { }) {
         if (name !== "/" && name.endsWith("/")) {
             // Fetch sublist
             let currentPath = pathRenderList.map((item) => item.name).join("");
@@ -50,33 +72,33 @@ export default function CategoryInput(props) {
             setPathRenderList(pathDataList.current);
             callback(true);
 
-            let lastItem = pathDataList.current.at(-1);
+
             // Update sub list from API
             setIsFetching(true);
             refController.current = new AbortController();
             let signal = refController.current.signal;
-            // fetch API
-            ContentRender.getAllCategoryList(lastItem.path).then(subDataList => {
-
-                // Remove last item in list
-                let tmpList = [...pathDataList.current];
-                tmpList.pop();
-                //
-                lastItem = { ...lastItem, subList: subDataList }
-                tmpList.push(lastItem);
-                pathDataList.current = tmpList;
-                // check unmount component
-                if (signal.aborted) {
-                    return;
-                }
-                setPathRenderList(pathRenderList => tmpList);
-                setIsFetching(false);
-            }).catch(err => {
-                console.log(err);
-            });
+            let tmpList = await makeSubListFromAPI(signal);
+            // Component is unmount
+            if (signal.aborted) return;
+            pathDataList.current = tmpList;
+            setPathRenderList(tmpList);
+            setIsFetching(false);
         } else {
             callback();
         }
+    }
+
+    async function makeSubListFromAPI(signal) {
+        let lastItem = pathDataList.current.at(-1);
+        // fetch API
+        let subDataList = await ContentRender.getAllCategoryList(lastItem.path, signal);
+        // Remove last item in list
+        let tmpList = [...pathDataList.current];
+        tmpList.pop();
+        //
+        lastItem = { ...lastItem, subList: subDataList }
+        tmpList.push(lastItem);
+        return tmpList
     }
 
     function handleKeyInput(evt) {
@@ -148,6 +170,7 @@ export default function CategoryInput(props) {
         ));
     }
 
+    console.log("Re-render CategoryInput.");
     return (
         <div style={{ marginBottom: 50, height: 30 }}>
             <div className="pg_mm_path_parent">

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import Layout from './Layout';
-import { save } from '../API/Github/Request';
+import * as hub from '../Utils/GithubCRUD';
 import { StringUtils } from '../Utils/StringUtils';
 import { NotificationManager } from 'react-notifications';
 import CategoryInput from '../ViewComponents/CategoryInput';
@@ -11,36 +11,50 @@ import 'react-markdown-editor-lite/lib/index.css';
 import { ContentRender } from '../Utils/ContentRender';
 
 export default function WriterTab(props) {
-    // use for control sync process
+    // Use for control sync process
     const refController = React.useRef(null);
-    //
+    // Use for store data
     const mdParser = new MarkdownIt();
     const [content, setContent] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false);
     const title = useRef("");
     const category = useRef("");
 
-    const { inputPath } = props;
+    // Use for update file
+    const { updateAction } = props;
+    const { inputPath, clearPath } = updateAction;
+    const isCreated = !inputPath;
+    const originData = useRef({
+        title: null,
+        category: null,
+        content: null
+    });
+
     React.useEffect(() => {
-        if (!inputPath) {
+        if (isCreated) {
             return;
         }
         //
+        clearPath();
         refController.current = new AbortController();
         let signal = refController.current.signal;
         // fetch API
-        ContentRender.makeContentObject(inputPath).then(data => {
-            if (signal.aborted) {
-                return;
-            }
-
+        ContentRender.makeContentObject(inputPath, signal).then(data => {
             if (!data) return;
-            // setContent(data.content);
+            title.current = data.title;
+            category.current = data.category;
+            originData.current = {
+                title: data.title,
+                category: data.category,
+                originData: data.content
+            }
+            setContent(data.content);
         });
 
         return () => {
             refController.current.abort();
         }
-    }, [inputPath])
+    }, [clearPath, inputPath, isCreated])
 
     function handleImageUpload(file, callback) {
         const reader = new FileReader()
@@ -99,23 +113,43 @@ export default function WriterTab(props) {
         fileContent += `---\n\n`;
         fileContent += content;
 
+        let commitMsg = isCreated
+            ? "Create file " + category.current + "/" + StringUtils.truncateString(titleFix, 25)
+            : "Update file " + inputPath;
+
         let data = {
-            message: `mm_project: add ${StringUtils.truncateString(titleFix, 25)}.md`,
+            message: commitMsg,
             content: StringUtils.base64Encode(fileContent)
         }
 
-        let response = await save(data, filePath);
-        if (response && response.commit) {
-            NotificationManager.info("Commited to \n" + response.commit.html_url, "Sucess commit Github repository.", 5000, function () {
-                window.open(response.commit.html_url, '_blank').focus();
-            }, false);
+        store(data, filePath);
+    }
 
-            props.actionSubmit({
-                title: title.current,
-                content: content,
-                id: id,
-                category: category.current
-            });
+    async function store(data, filePath) {
+        setIsProcessing(true);
+        if (isCreated) {
+            let response = await hub.create(data, filePath);
+            if (response && response.commit) {
+                NotificationManager.info(response.commit.html_url, "Commited", 5000, function () {
+                    window.open(response.commit.html_url, '_blank').focus();
+                }, false);
+                setIsProcessing(false);
+            }
+        } else {
+            if (title.current !== originData.current.title
+                || category.current !== originData.current.category) {
+                console.log("update path send...")
+                await hub.move("main", inputPath, filePath);
+            }
+
+            if (content !== originData.current.content) {
+                console.log("update content send...")
+                await hub.update(data, filePath).catch(err => {
+                    NotificationManager.error(err + "");
+                });
+            }
+            setIsProcessing(false);
+            NotificationManager.info("Updated");
         }
     }
 
@@ -124,25 +158,41 @@ export default function WriterTab(props) {
         category.current = source.category;
     }
 
-    console.log("Re-render WriterTab")
     return (
         <div className="pg_mm_amination">
             <Layout.MiddleContent>
                 <>
                     <div style={{ width: "90%", height: 90, float: 'left' }}>
-                        <CategoryInput onChange={handleChangeCategory} />
+                        <CategoryInput defaultTitle={title.current} defaultCategory={category.current} onChange={handleChangeCategory} />
                     </div>
                     {/* Save button  */}
-                    <button onClick={handleSubmit} style={{ width: '9%', height: 40, float: 'right' }}>Submit</button>
+                    <button
+                        onClick={handleSubmit}
+                        style={{ width: '9%', height: 40, float: 'right' }}>
+                        {isCreated ? "Create" : "Update"}
+                    </button>
                 </>
                 <div style={{ marginTop: '5px' }}></div>
                 <MdEditor
                     value={content}
                     onImageUpload={handleImageUpload}
-                    style={{ height: 'calc(100vh - 90px', width: '100%' }}
+                    style={{ height: 'calc(100vh - 160px', width: '100%' }}
                     renderHTML={text => mdParser.render(text)}
                     onChange={({ html, text }) => setContent(text)}
                 />
+
+                {
+                    isProcessing ?
+                        <div className="pg_mm_loadding">
+                            <img height="45px"
+                                src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                                alt="loadding..."
+                            />
+                        </div>
+                        :
+                        ''
+                }
+
             </Layout.MiddleContent>
         </div>
     )

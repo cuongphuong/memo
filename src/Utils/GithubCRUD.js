@@ -29,15 +29,25 @@ export function create(data = {
  * @param {String} filePath Path to file location
  * @returns
  */
-export function update(data = {
+export async function update(data = {
     message: 'Add file',
     content: 'KEVtcHR5KQ==', // (Empty)
 }, filePath) {
 
     // Get last SHA version on Github
-    let lastSha = request.getRef("heads/main");
+    let dataAPI = await request.readContentByPath(filePath);
+    if (dataAPI === null) return;
+    let lastSha = dataAPI.sha;
     data.sha = lastSha;
     return request.updateContent(data, filePath);
+}
+
+/**
+ * Delete a file 
+ * @param {String} filePath path to file will delete
+ */
+export function deleteFile(filePath) {
+    return move("main", filePath);
 }
 
 /**
@@ -45,6 +55,7 @@ export function update(data = {
  * @param {String} branch master 
  * @param {String} path 
  * @param {String} newPath not existed then remove path
+ * @returns true if move successfully
  */
 export async function move(branch = "main", path, newPath) {
     // Get last SHA of main branch
