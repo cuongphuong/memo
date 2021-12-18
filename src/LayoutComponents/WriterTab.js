@@ -9,6 +9,7 @@ import CategoryInput from '../ViewComponents/CategoryInput';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
 import { ContentRender } from '../Utils/ContentRender';
+import { useSelector } from 'react-redux';
 
 export default function WriterTab(props) {
     // Use for control sync process
@@ -29,6 +30,8 @@ export default function WriterTab(props) {
         category: null,
         content: null
     });
+
+    const style = useSelector(state => state.style);
 
     React.useEffect(() => {
         if (isCreated) {
@@ -167,8 +170,9 @@ export default function WriterTab(props) {
                     </div>
                     {/* Save button  */}
                     <button
-                        onClick={handleSubmit}
-                        style={{ width: '9%', height: 40, float: 'right' }}>
+                        style={{ ...style.button, width: '9%', height: '40px', float: 'right'}}
+                        className='pg_mm_write_button'
+                        onClick={handleSubmit}>
                         {isCreated ? "Create" : "Update"}
                     </button>
                 </>

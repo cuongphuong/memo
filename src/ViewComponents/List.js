@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 import { StringUtils } from '../Utils/StringUtils';
 
 function List({ children }) {
@@ -15,6 +16,7 @@ function ListItem({ source = {
     id: "n/a",
     category: "n/a"
 }, handleChooseItem, activeId }) {
+    const style = useSelector(state => state.style);
 
     function handleClick() {
         handleChooseItem(source);
@@ -34,12 +36,19 @@ function ListItem({ source = {
     }
 
     return (
-        <div className={isActive() ? "pg_mm_list_item pg_mm_list_item_active" : "pg_mm_list_item"} onClick={handleClick}>
+        <div
+            style={isActive() ? style.borderLineHover : {}}
+            className={isActive() ? "pg_mm_list_item pg_mm_list_item_active" : "pg_mm_list_item"}
+            onClick={handleClick}
+        >
             <h3 className="pg_mm_trunc">{source.title}</h3>
             <p className="pg_mm_trunc">{source.content}</p>
             <div className="pg_mm_list_item_info">
                 <span className="pg_mm_trunc">{`${source.id}`}</span>
-                <span className="pg_mm_trunc">{truncPathListItem(source.category)}</span>
+                <span
+                    style={style.headerMenu}
+                    className="pg_mm_trunc">{truncPathListItem(source.category)}
+                </span>
             </div>
         </div>
     )

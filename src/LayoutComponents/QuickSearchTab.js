@@ -3,10 +3,12 @@ import Layout from './Layout';
 import Viewer from '../ViewComponents/Viewer';
 import { ContentRender } from '../Utils/ContentRender';
 import List from '../ViewComponents/List';
+import { useSelector } from 'react-redux';
 
 function QuickSearchTab(props) {
     // use for control sync process
     const refController = React.useRef(null);
+    const style = useSelector(state => state.style);
 
     const [mdContent, setMdContent] = useState("No content result ...");
     const [searchResultList, setSearchResultList] = useState([]);
@@ -100,6 +102,7 @@ function QuickSearchTab(props) {
         <div className="pg_mm_amination">
             <Layout.SiderBar>
                 <input
+                    style={style.borderLine}
                     ref={inputObj}
                     onChange={(evt) => { handleSearchChange(evt) }}
                     type="text"
@@ -111,7 +114,7 @@ function QuickSearchTab(props) {
             </Layout.SiderBar>
             <Layout.RightContent>
                 <Viewer source={mdContent} />
-                <div className='pg_mm_logo'>
+                <div className='pg_mm_logo unselectable'>
                     <img width="350px"
                         src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/logo.png"
                         alt="loadding..."

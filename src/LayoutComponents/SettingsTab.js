@@ -3,6 +3,7 @@ import Layout from './Layout';
 import { getSingleton as LocalCache } from '../Utils/CacheManager';
 import { NotificationManager } from 'react-notifications';
 import './SettingsTab.css';
+import { useSelector } from 'react-redux';
 
 export default function SettingsTab() {
     const urlRepositoryInput = React.useRef(null);
@@ -14,6 +15,8 @@ export default function SettingsTab() {
 
     const CACHE_KEY = "pg_mm_settings";
     const cache = React.useRef(LocalCache(CACHE_KEY));
+
+    const style = useSelector(state => state.style);
 
     React.useEffect(() => {
         if (cache.current.has("urlRepository"))
@@ -73,7 +76,7 @@ export default function SettingsTab() {
                 <input ref={emailInput} className='pg_mm_settings_input' placeholder='Email...'></input>
                 <span className='pg_mm_example'>xxx@gmail.com</span>
                 <br />
-                <button onClick={handleSave} className='pg_mm_settings_submit'>Save</button>
+                <button style={style.button} onClick={handleSave} className='pg_mm_settings_submit'>Save</button>
             </Layout.MiddleContent>
         </div>
     )

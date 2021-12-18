@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 import "./Layout.css";
 
 const Layout = ({ children }) => {
@@ -10,9 +11,10 @@ const Layout = ({ children }) => {
 }
 
 const Header = ({ children }) => {
+    const style = useSelector(state => state.style);
     return (
         <div className="pg_mm_header" id="pg_mm_header-menu">
-            <ul>
+            <ul style={style.headerMenu}>
                 {children}
             </ul>
         </div>
@@ -20,15 +22,17 @@ const Header = ({ children }) => {
 }
 
 const HeaderItem = ({ onClick, title, selected }) => {
+    const style = useSelector(state => state.style);
 
     if (title === "Settings") {
-        return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item'>⚙</p>
+        return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item unselectable'>⚙</p>
     }
 
     return (
         <li>
             <span
-                className={selected === title ? "pg_mm_header-menu_selected" : ""}
+                className="unselectable"
+                style={selected === title ? style.menuSelected : {}}
                 onClick={() => onClick(title)}>
                 {title}
             </span>
@@ -39,8 +43,11 @@ const HeaderItem = ({ onClick, title, selected }) => {
 Header.Item = HeaderItem;
 
 const SiderBar = ({ children }) => {
+    const style = useSelector(state => state.style);
     return (
-        <div className="pg_mm_left pg_mm_scroll">
+        <div
+            style={style.leftBackground}
+            className="pg_mm_left pg_mm_scroll">
             {children}
         </div>
     );

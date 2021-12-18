@@ -31,21 +31,34 @@
   position: fixed;
   top: 65px;
   z-index: 2;
+  background-color: rgb(169, 169, 169);
+  padding: 5px;
+  color: rgb(70, 70, 70);
 }
 
 .pg_mm_view_cls_button {
   right: 15px;
-  background-color: coral;
+  background-color: rgb(163, 129, 129);
 }
 
 .pg_mm_view_edit_button {
-  right: 81px;
-  background-color: rgb(23, 248, 169);
+  right: 85px;
 }
 
 .pg_mm_view_delete_button {
-  right: 135px;
-  background-color: rgb(247, 17, 67);
+  right: 142px;
+}
+
+.pg_mm_view_cls_button:hover {
+  background-color: rgb(255, 123, 0);
+}
+
+.pg_mm_view_edit_button:hover {
+  background-color: rgb(0, 187, 115);
+}
+
+.pg_mm_view_delete_button:hover {
+  background-color: rgb(255, 0, 0);
 }
 
 @keyframes open {

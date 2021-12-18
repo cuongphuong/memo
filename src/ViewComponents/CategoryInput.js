@@ -1,9 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { ContentRender } from "../Utils/ContentRender";
 
 export default function CategoryInput(props) {
     // use for control sync process
     const refController = React.useRef(null);
+    const style = useSelector(state => state.style);
     //
     const nameInput = React.useRef("");
     const pathDataList = React.useRef([]);
@@ -183,6 +185,7 @@ export default function CategoryInput(props) {
                 ))}
                 {/* Input path */}
                 <input
+                    style={style.borderLine}
                     placeholder="Press [DEL] to back to previous folder."
                     ref={nameInput}
                     className="pg_mm_name_input"

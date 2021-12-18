@@ -7,6 +7,7 @@ import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import SettingsTab from './LayoutComponents/SettingsTab';
 import { getSingleton as LocalCache } from "./Utils/CacheManager.js";
+import StyleSettings from './ViewComponents/StyleSettings';
 
 function App() {
     const menuList = ["Search", "List", "Write"];
@@ -86,6 +87,7 @@ function App() {
                 {rederTabView()}
             </Layout.FullContent>
             <NotificationContainer />
+            <StyleSettings />
         </Layout>
     );
 }

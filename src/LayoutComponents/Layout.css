@@ -10,12 +10,12 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgb(199, 158, 158);
+  background: rgb(119, 119, 119);
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(170, 123, 123);
+  background: rgb(63, 63, 63);
 }
 
 *.unselectable {
@@ -55,7 +55,6 @@
 
 .pg_mm_left {
   float: left;
-  background-color: #f0edd9;
   width: 20%;
 }
 
@@ -82,8 +81,6 @@
 /* Menu */
 
 #pg_mm_header-menu ul {
-  background-color: #eec0c6;
-  background-image: linear-gradient(315deg, #eec0c6 0%, #e58c8a 74%);
   list-style-type: none;
   text-align: left;
   padding: 0;
@@ -107,10 +104,8 @@
   display: block;
   cursor: pointer;
 }
-#pg_mm_header-menu span:hover,
-.pg_mm_header-menu_selected {
-  background: #ffd6d6;
-  color: #333 !important;
+#pg_mm_header-menu span:hover {
+  border-bottom: solid 2px #dcdcdc;
 }
 
 .pg_mm_settings_menu_item {
@@ -126,14 +121,13 @@
 
 .pg_mm_settings_menu_item:hover {
   background-color: none;
-  color: #ff7433;
+  color: #545454;
 }
 
 /* ----------------------------------- */
 /* Input field */
 
 .pg_mm_search_input {
-  border: solid tomato 1px;
   height: 40px;
   width: 100%;
   box-sizing: border-box;
@@ -143,8 +137,6 @@
 
 .pg_mm_search_input:focus {
   outline: none;
-  box-shadow: 0.5px 1px 5px 0px tomato;
-  color: tomato;
 }
 
 /* ----------------------------------- */
@@ -171,8 +163,8 @@
 
 .pg_mm_list_item:hover,
 .pg_mm_list_item_active {
-  border: solid 1px rgb(252, 139, 119);
-  box-shadow: 1px 1px 5px 1px rgb(252, 139, 119);
+  border: solid 1px rgb(150, 150, 150);
+  box-shadow: 1px 1px 5px 1px rgb(107, 107, 107);
 }
 
 .pg_mm_list_item * {
@@ -212,21 +204,17 @@
 
 .pg_mm_list_item > .pg_mm_list_item_info > span:nth-child(2) {
   text-align: right;
-  background-color: #ff7433;
   padding: 2px;
-  color: #fff;
 }
 
 /* ------------------------------- */
-button {
-  background-color: #e58c8a;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+button:hover {
+  background-color: rgb(175, 89, 175) !important;
 }
 
-button:hover {
-  background-color: rgb(175, 89, 175);
+button {
+  border: none;
+  cursor: pointer;
 }
 
 /* --------------------------------------- */
@@ -242,15 +230,6 @@ button:hover {
   background-color: #dcdcdc;
   animation-name: example;
   animation-duration: 0.5s;
-}
-
-.pg_mm_name_input {
-  height: 40px;
-  outline: none;
-  border: solid tomato 1px;
-  box-sizing: border-box;
-  position: absolute;
-  width: 500px;
 }
 
 .pg_mm_selected_path_item {
@@ -328,5 +307,5 @@ button:hover {
   top: calc(100vh - 70%);
   left: calc(100vh - 3%);
   z-index: -1;
-  opacity: 0.3;
+  opacity: 0.2;
 }
