@@ -45,6 +45,8 @@ export const RequestAPI = (function () {
     async function request(inp) {
         // Make config request
         let url = baseUrl + inp.url.replaceAll("//", "/");
+        url = url.trim();
+        url = encodeURI(url);
         let requestConfig = makeRequestConfig(inp);
 
         return await sendRequest(url, requestConfig);

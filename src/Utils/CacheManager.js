@@ -44,7 +44,7 @@ class CacheManager {
     isExpired() {
         let whenCached = localStorage.getItem(this.key + ':ts')
         let age = (Date.now() - whenCached) / 1000
-        console.log('[CacheManager] is Expired', this.expire && age > this.expire);
+        // console.log('[CacheManager] is Expired', this.expire && age > this.expire);
         if (this.expire && age > this.expire) {
             this.clear();
             return true;

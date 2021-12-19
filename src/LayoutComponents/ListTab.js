@@ -3,12 +3,16 @@ import Layout from './Layout';
 import CategoryList from '../ViewComponents/CategoryList';
 import ViewPopup from './ViewPopup';
 import { ContentRender } from '../Utils/ContentRender';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setCategoryList } from '../Actions/ListTabReducer';
 
 export default function ListTab(props) {
     // use for control sync process
     const refController = React.useRef(null);
+    const dispatch = useDispatch();
     //
-    const [categoryList, setCategoryList] = React.useState([]);
+    const categoryList = useSelector(state => state.listTabData.categoryList);
     const [isDisplayPopup, setIsDisplayPopup] = React.useState("none");
     const [dataView, setDataView] = React.useState(null);
 
@@ -20,7 +24,7 @@ export default function ListTab(props) {
             if (signal.aborted) {
                 return;
             }
-            setCategoryList(data);
+            dispatch(setCategoryList(data));
         }).catch(error => {
             console.log(error);
         });
@@ -29,7 +33,7 @@ export default function ListTab(props) {
             setDataView(null);
             refController.current.abort();
         }
-    }, []);
+    }, [dispatch]);
 
     function handleItemClick(path) {
         setIsDisplayPopup("block");

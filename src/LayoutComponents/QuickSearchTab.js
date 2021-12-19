@@ -4,33 +4,41 @@ import Viewer from '../ViewComponents/Viewer';
 import { ContentRender } from '../Utils/ContentRender';
 import List from '../ViewComponents/List';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setActiveId, setMdContent, setSearchResultList } from '../Actions/SearchReducer';
+import SearchHistoryCache from '../Utils/SearchHistoryCache';
 
-function QuickSearchTab(props) {
+function QuickSearchTab() {
     // use for control sync process
     const refController = React.useRef(null);
     const style = useSelector(state => state.style);
 
-    const [mdContent, setMdContent] = useState("No content result ...");
-    const [searchResultList, setSearchResultList] = useState([]);
+    // Logic state
+    const dispatch = useDispatch();
+    const searchResultList = useSelector(state => state.searchData.searchResultList);
+    const mdContent = useSelector(state => state.searchData.mdContent);
+    const activeId = useSelector(state => state.searchData.activeId);
+
+    // UI state
     const [isProcessing, setIsProcessing] = useState(false);
-    const [activeId, setActiveId] = useState("");
+    const [searchCacheList, setSearchCacheList] = useState([]);
     const inputObj = useRef(null);
     const typingTimer = useRef(null); // timer identifier 
     let doneTypingInterval = 600;  // time in ms (600ms)
 
     useEffect(() => {
         refController.current = new AbortController();
-        // Set default view data if existed
-        if (props.defaultPost) {
-            setSearchResultList((searchResultList) => [...searchResultList, props.defaultPost]);
-            setMdContent(props.defaultPost);
-        }
-
         inputObj.current.focus();
+
+        // Load cache
+        let cacheKeywordList = SearchHistoryCache.getTopKeyWord();
+        setSearchCacheList(cacheKeywordList);
+
         return () => {
+            console.log("Clean QuikTabSearch")
             refController.current.abort();
         }
-    }, [props])
+    }, [])
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);
@@ -41,7 +49,7 @@ function QuickSearchTab(props) {
             if (signal.aborted) {
                 return;
             }
-            setSearchResultList([]);
+            dispatch(setSearchResultList([]));
             doneTyping(evt.target.value)
         }, doneTypingInterval);
     }
@@ -53,14 +61,15 @@ function QuickSearchTab(props) {
         setIsProcessing(true);
         let apiResultContentList = await ContentRender.search(keyword, signal);
         if (apiResultContentList && apiResultContentList.length > 0) {
-            setSearchResultList(apiResultContentList);
+            SearchHistoryCache.insertKey(keyword);
+            dispatch(setSearchResultList(apiResultContentList));
         }
         setIsProcessing(false);
     }
 
     function handleChooseItem(source) {
-        setActiveId(source.id);
-        setMdContent(source);
+        dispatch(setActiveId(source.id));
+        dispatch(setMdContent(source));
     }
 
     function renderSearchList() {
@@ -98,10 +107,12 @@ function QuickSearchTab(props) {
         )
     }
 
+    console.log("re-render QuikTabSearch.")
     return (
         <div className="pg_mm_amination">
             <Layout.SiderBar>
                 <input
+                    list="cacheList"
                     style={style.borderLine}
                     ref={inputObj}
                     onChange={(evt) => { handleSearchChange(evt) }}
@@ -109,6 +120,9 @@ function QuickSearchTab(props) {
                     className="pg_mm_search_input"
                     placeholder="Type for search..."
                 />
+                <datalist id="cacheList">
+                    {searchCacheList.map((item, index) => <option key={index} value={item} />)}
+                </datalist>
                 <div style={{ marginTop: '5px' }}></div>
                 {renderSearchList()}
             </Layout.SiderBar>
