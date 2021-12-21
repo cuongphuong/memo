@@ -1,33 +1,14 @@
 import React from 'react';
-import "./CategoryList.css"
-
+import "./CategoryList.css";
+// import * as request from "../API/Github/Request";
+import CategoryListCache from '../Utils/CategoryListCache';
 import { ContentRender } from '../Utils/ContentRender';
-
-function makeRenderList(categoryObj, sourcePath) {
-    let renderList = [];
-    for (const property in categoryObj) {
-        if (typeof categoryObj[property] === "object" && property !== "itemList") {
-            renderList = [...renderList, {
-                name: property,
-                path: `${sourcePath}/${property}`,
-                type: "dir"
-            }]
-        }
-    }
-
-    if (categoryObj.itemList) {
-        categoryObj.itemList.forEach(item => {
-            item = { ...item, type: "file" }
-            renderList = [...renderList, item];
-        });
-    }
-    return renderList;
-}
 
 /**
  * CategoryList =====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
  */
 function CategoryList({ children }) {
+
     return (
         <div className="pg_mm_category_list_main">
             <div className="section" id="J1" >
@@ -37,36 +18,20 @@ function CategoryList({ children }) {
     )
 }
 
-
 /**
  * Block =====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
  */
 function Block(props) {
-    // use for control sync process
-    const refController = React.useRef(null);
-    //
-    const [categoryObj, setCategoryObj] = React.useState([]);
+    const [renderList, setRenderList] = React.useState([]);
 
     React.useEffect(() => {
-        refController.current = new AbortController();
-        let signal = refController.current.signal;
-        ContentRender.getAllItemFromPath(props.name).then(data => {
-            if (signal.aborted) {
-                return;
-            }
-            setCategoryObj(data);
-        }).catch(err => {
-            console.log(err)
-        });
-
+        let categoryList = CategoryListCache.getElementByPath(props.name);
+        setRenderList(categoryList);
         return () => {
-            refController.current.abort();
         }
     }, [props.name])
 
-
     function renderItem() {
-        let renderList = makeRenderList(categoryObj, props.name);
         let dirList = renderList.filter(p => p.type === "dir");
         let fileList = renderList.filter(p => p.type === "file");
 
@@ -102,7 +67,6 @@ function Block(props) {
     )
 }
 
-
 /**
  * Row =====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
  */
@@ -110,60 +74,63 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
     // use for control sync process
     const refController = React.useRef(null);
     //
-    const [categoryObject, setCategoryObject] = React.useState([]);
+    const [renderList, setRenderList] = React.useState([]);
     const [sourcePath, setSourcePath] = React.useState(source.path);
     const [isLoadding, setIsLoadding] = React.useState(true);
     const pathList = React.useRef([source.path]);
 
     React.useEffect(() => {
         refController.current = new AbortController();
-        let signal = refController.current.signal;
-        ContentRender.getAllItemFromPath(sourcePath).then(data => {
-            if (signal.aborted) {
-                return;
-            }
-            // success API
-            setCategoryObject(data);
-            setIsLoadding(false);
-        }).catch(err => {
-            console.log(err);
-            // check unmount component
-            if (signal.aborted) {
-                return;
-            }
-            setCategoryObject([]);
-            setIsLoadding(false);
-        });
+        let categoryList = CategoryListCache.getElementByPath(source.path);
+        setRenderList(categoryList);
+        setIsLoadding(false);
 
         return () => {
             refController.current.abort();
         }
-    }, [sourcePath]);
+    }, [source.path]);
+
+    function fetchFromAPI(path) {
+        // fetch API
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
+
+        setIsLoadding(true);
+        ContentRender.getAllItemFromPath(path).then(data => {
+            if (signal.aborted) return;
+
+            console.log("updated");
+            let dataList = makeRenderList(data, path);
+            setSourcePath(path);
+            setRenderList(dataList);
+            setIsLoadding(false);
+
+            CategoryListCache.updateDataIntoPath(path, dataList)
+        }).catch(err => {
+            console.log("Fail to fetch data.", err);
+            // check unmount component
+            if (signal.aborted) return;
+            setRenderList([]);
+            setIsLoadding(false);
+        });
+    }
 
     function gotoPath(path) {
         let index = pathList.current.indexOf(path);
         let tmpList = pathList.current.filter(p => pathList.current.indexOf(p) <= index);
         pathList.current = tmpList;
-        setSourcePath(path);
         setIsLoadding(true);
-        // fetch API
-        refController.current = new AbortController();
-        let signal = refController.current.signal;
-        ContentRender.getAllItemFromPath(sourcePath).then(data => {
-            if (signal.aborted) {
-                return;
-            }
-            setCategoryObject(data);
-            setIsLoadding(false);
-        }).catch(err => {
-            console.log("Fail to fetch data.");
-            // check unmount component
-            if (signal.aborted) {
-                return;
-            }
-            setCategoryObject([]);
-            setIsLoadding(false);
-        });
+        // load from cache
+        let categoryList = CategoryListCache.getElementByPath(path);
+
+        // request is reload or cache is empty
+        if (path === sourcePath || categoryList.length === 0) {
+            fetchFromAPI(path);
+            return;
+        }
+        setRenderList(categoryList);
+        setSourcePath(path);
+        setIsLoadding(false);
     }
 
     function onClickSubFolder(name) {
@@ -171,9 +138,20 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
         gotoPath(sourcePath + "/" + name)
     }
 
-    function renderItem() {
-        let renderList = makeRenderList(categoryObject, source.path);
+    function renderPathList() {
+        let fixPathList = pathList.current.map(path => truncPathListItem(path));
+        return (
+            <>
+                {fixPathList.map((item, index) => <span className="pg_mm_path_item"
+                    key={index}
+                    onClick={() => gotoPath(pathList.current[index])}>
+                    {item}
+                </span>)}
+            </>
+        )
+    }
 
+    function renderItem() {
         if (isLoadding) {
             return (<img
                 height="20px"
@@ -192,27 +170,12 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
         />);
     }
 
-    function renderPathList() {
-        let fixPathList = pathList.current.map(path => truncPathListItem(path));
-        return (
-            <>
-                {fixPathList.map((item, index) => <span className="pg_mm_path_item"
-                    key={index}
-                    onClick={() => gotoPath(pathList.current[index])}>
-                    {item}
-                </span>)}
-            </>
-        )
-    }
-
-    function truncPathListItem(strPath) {
-        let tmpPathList = strPath.split("/");
-        return tmpPathList.pop();
-    }
-
     return (
         <dl className="link-list">
-            <dt className="link-hd" onClick={() => gotoPath(pathList.current[pathList.current.length - 1])}>{renderPathList()}</dt>
+            <dt
+                className="link-hd"
+                onClick={() => gotoPath(pathList.current[pathList.current.length - 1])}>{renderPathList()}
+            </dt>
             <dd className="link-bd">
                 {renderItem()}
             </dd>
@@ -242,6 +205,33 @@ function Item(props) {
             {props.name}
         </span>);
     }
+}
+
+
+function makeRenderList(categoryObj, sourcePath) {
+    let renderList = [];
+    for (const property in categoryObj) {
+        if (typeof categoryObj[property] === "object" && property !== "itemList") {
+            renderList = [...renderList, {
+                name: property,
+                path: `${sourcePath}/${property}`,
+                type: "dir"
+            }]
+        }
+    }
+
+    if (categoryObj.itemList) {
+        categoryObj.itemList.forEach(item => {
+            item = { ...item, type: "file" }
+            renderList = [...renderList, item];
+        });
+    }
+    return renderList;
+}
+
+function truncPathListItem(strPath) {
+    let tmpPathList = strPath.split("/");
+    return tmpPathList.pop();
 }
 
 CategoryList.Block = Block;

@@ -29,7 +29,8 @@ const orangeStyle = {
 
 const blueStyle = {
     headerMenu: {
-        background: "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(69,163,149,1) 0%, rgba(0,212,255,1) 100%)"
+        backgroundColor: "rgb(2,0,36)",
+        background: "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(43,237,209,1) 0%, rgba(0,212,255,1) 100%)"
     },
     menuSelected: {
         background: "#b0f4e9",

@@ -8,7 +8,7 @@ class CacheManager {
     add(key, value) {
         if (key) {
             this.items = { ...this.items, [key]: value }
-            console.log('[CacheManager] add: ', key, this.items);
+            // console.log('[CacheManager] add: ', key, this.items);
         }
         this.store();
     }
@@ -26,7 +26,7 @@ class CacheManager {
 
     store() {
         localStorage.setItem(this.key, JSON.stringify(this.items));
-        localStorage.setItem(this.key + ':ts', Date.now());
+        localStorage.setItem(this.key + ':ts', new Date().getTime());
     }
 
     get(key) {
@@ -43,8 +43,8 @@ class CacheManager {
 
     isExpired() {
         let whenCached = localStorage.getItem(this.key + ':ts')
-        let age = (Date.now() - whenCached) / 1000
-        // console.log('[CacheManager] is Expired', this.expire && age > this.expire);
+        let age = (new Date().getTime() - whenCached);
+
         if (this.expire && age > this.expire) {
             this.clear();
             return true;

@@ -6,32 +6,39 @@ import { ContentRender } from '../Utils/ContentRender';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setCategoryList } from '../Actions/ListTabReducer';
+import CategoryListCache from '../Utils/CategoryListCache';
+import * as request from '../API/Github/Request';
 
 export default function ListTab(props) {
-    // use for control sync process
-    const refController = React.useRef(null);
     const dispatch = useDispatch();
     //
     const categoryList = useSelector(state => state.listTabData.categoryList);
     const [isDisplayPopup, setIsDisplayPopup] = React.useState("none");
     const [dataView, setDataView] = React.useState(null);
+    const [isLoadding, setIsLoadding] = React.useState(false);
+
+    async function fetchTreesList(callback = function (trees) { }) {
+        let latestCommit = await request.getRef("heads/main");
+        let trees = await request.getTree(latestCommit + '?recursive=true');
+        callback(trees);
+    }
 
     React.useEffect(() => {
-        refController.current = new AbortController();
-        let signal = refController.current.signal;
-        // fetch API
-        ContentRender.getAllCategoryList("").then(data => {
-            if (signal.aborted) {
-                return;
-            }
-            dispatch(setCategoryList(data));
-        }).catch(error => {
-            console.log(error);
-        });
+        // Checking cache
+        if (!CategoryListCache.isCached()) {
+            setIsLoadding(true);
+            fetchTreesList(function (trees) {
+                // Re-update cache
+                CategoryListCache.setOrUpdateCache(trees);
+                dispatch(setCategoryList(CategoryListCache.getMainCategory()));
+                setIsLoadding(false);
+            });
+        }
 
+        let mainCategoryList = CategoryListCache.getMainCategory();
+        dispatch(setCategoryList(mainCategoryList));
         return () => {
             setDataView(null);
-            refController.current.abort();
         }
     }, [dispatch]);
 
@@ -49,9 +56,36 @@ export default function ListTab(props) {
         setDataView(null);
     }
 
+    function handleReloadDataCache() {
+        CategoryListCache.setOrUpdateCache(null);
+        setIsLoadding(true);
+        dispatch(setCategoryList([]));
+        fetchTreesList(function (trees) {
+            // Re-update cache
+            setTimeout(function () {
+                CategoryListCache.setOrUpdateCache(trees);
+                dispatch(setCategoryList(CategoryListCache.getMainCategory()));
+                setIsLoadding(false);
+            }, 500);
+        });
+    }
+
+    function loadding() {
+        if (isLoadding) {
+            return (
+                <img className='pg_mm_list_loadding unselectable' width="50px"
+                    src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                    alt="empty"
+                />
+            )
+        }
+    }
+
     return (
         <div className="pg_mm_amination">
+            {loadding()}
             <Layout.MiddleContent >
+                <span onClick={handleReloadDataCache} className='pg_mm_reload_button'>Reload (Caching for 5s)</span>
                 <CategoryList>
                     {categoryList.map((categoryName, index) => <CategoryList.Block
                         handleItemClick={handleItemClick}

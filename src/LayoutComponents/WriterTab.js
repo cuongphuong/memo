@@ -10,6 +10,7 @@ import CategoryInput from '../ViewComponents/CategoryInput';
 import 'react-markdown-editor-lite/lib/index.css';
 import { ContentRender } from '../Utils/ContentRender';
 import { useSelector } from 'react-redux';
+import ContentWriterCache from '../Utils/ContentWriterCache';
 
 export default function WriterTab(props) {
     // Use for control sync process
@@ -24,7 +25,8 @@ export default function WriterTab(props) {
     // Use for update file
     const { updateAction } = props;
     const { inputPath, clearPath } = updateAction;
-    const isCreated = !inputPath;
+    const isCreateed = useRef(!inputPath);
+
     const originData = useRef({
         title: null,
         category: null,
@@ -34,11 +36,17 @@ export default function WriterTab(props) {
     const style = useSelector(state => state.style);
 
     React.useEffect(() => {
-        if (isCreated) {
+        if (inputPath === ContentWriterCache.getPath() || isCreateed.current) {
+            title.current = ContentWriterCache.getTitle();
+            setContent(ContentWriterCache.getContent());
+
+            isCreateed.current = ContentWriterCache.getPath() === "";
             return;
         }
-        //
+
+        // For update data
         clearPath();
+        ContentWriterCache.setPath(inputPath);
         refController.current = new AbortController();
         let signal = refController.current.signal;
         // fetch API
@@ -57,7 +65,7 @@ export default function WriterTab(props) {
         return () => {
             refController.current.abort();
         }
-    }, [clearPath, inputPath, isCreated])
+    }, [clearPath, inputPath])
 
     function handleImageUpload(file, callback) {
         const reader = new FileReader()
@@ -116,7 +124,7 @@ export default function WriterTab(props) {
         fileContent += `---\n\n`;
         fileContent += content;
 
-        let commitMsg = isCreated
+        let commitMsg = isCreateed.current
             ? "Create file " + category.current + "/" + StringUtils.truncateString(titleFix, 25)
             : "Update file " + inputPath;
 
@@ -130,13 +138,15 @@ export default function WriterTab(props) {
 
     async function store(data, filePath) {
         setIsProcessing(true);
-        if (isCreated) {
+        if (isCreateed.current) {
             let response = await hub.create(data, filePath);
             if (response && response.commit) {
                 NotificationManager.info(response.commit.html_url, "Commited", 5000, function () {
                     window.open(response.commit.html_url, '_blank').focus();
                 }, false);
                 setIsProcessing(false);
+                // release cache
+                ContentWriterCache.releaseCache();
             }
         } else {
             if (title.current !== originData.current.title
@@ -153,27 +163,57 @@ export default function WriterTab(props) {
             }
             setIsProcessing(false);
             NotificationManager.info("Updated");
+            // release cache
+            ContentWriterCache.releaseCache();
         }
     }
 
     function handleChangeCategory(source = { category: "", title: "" }) {
         title.current = source.title;
         category.current = source.category;
+
+        //cache
+        ContentWriterCache.setContent(content);
+        ContentWriterCache.setTitle(source.title);
+    }
+
+    function handleChangeConetnt({ html, text }) {
+        setContent(text)
+
+        //cache
+        ContentWriterCache.setContent(text);
+        ContentWriterCache.setTitle(title.current);
+    }
+
+    function handleClearForm() {
+        ContentWriterCache.releaseCache();
+        setContent("Loadding...");
+        setTimeout(function () {
+            title.current = "";
+            category.current = "";
+            setContent("");
+        }, 500)
     }
 
     return (
         <div className="pg_mm_amination">
             <Layout.MiddleContent>
                 <>
-                    <div style={{ width: "90%", height: 90, float: 'left' }}>
+                    <div style={{ width: "85%", height: 90, float: 'left' }}>
                         <CategoryInput defaultTitle={title.current} defaultCategory={category.current} onChange={handleChangeCategory} />
                     </div>
                     {/* Save button  */}
                     <button
-                        style={{ ...style.button, width: '9%', height: '40px', float: 'right'}}
+                        style={{ ...style.button, width: '9%', height: '40px', float: 'right', marginLeft: 2 }}
                         className='pg_mm_write_button'
                         onClick={handleSubmit}>
-                        {isCreated ? "Create" : "Update"}
+                        {isCreateed.current ? "Create" : "Update"}
+                    </button>
+                    <button
+                        style={{ ...style.button, width: '5%', height: '40px', float: 'right', backgroundColor: '#dcdcdc' }}
+                        className='pg_mm_write_button'
+                        onClick={handleClearForm}>
+                        Clear
                     </button>
                 </>
                 <div style={{ marginTop: '5px' }}></div>
@@ -182,7 +222,7 @@ export default function WriterTab(props) {
                     onImageUpload={handleImageUpload}
                     style={{ height: 'calc(100vh - 160px', width: '100%' }}
                     renderHTML={text => mdParser.render(text)}
-                    onChange={({ html, text }) => setContent(text)}
+                    onChange={handleChangeConetnt}
                 />
 
                 {
