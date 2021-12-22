@@ -69,14 +69,14 @@
 
   100% {
     margin-left: 0px;
-    opacity: 100%;
+    opacity: 1;
   }
 }
 
 @keyframes close {
   0% {
     margin-left: 0px;
-    opacity: 100%;
+    opacity: 1;
   }
 
   100% {
