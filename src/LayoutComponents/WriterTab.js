@@ -38,6 +38,7 @@ export default function WriterTab(props) {
     React.useEffect(() => {
         if (inputPath === ContentWriterCache.getPath() || isCreateed.current) {
             title.current = ContentWriterCache.getTitle();
+            category.current = ContentWriterCache.getCategory();
             setContent(ContentWriterCache.getContent());
 
             isCreateed.current = ContentWriterCache.getPath() === "";
@@ -54,6 +55,7 @@ export default function WriterTab(props) {
             if (!data) return;
             title.current = data.title;
             category.current = data.category;
+            console.log(data.category);
             originData.current = {
                 title: data.title,
                 category: data.category,
@@ -175,6 +177,7 @@ export default function WriterTab(props) {
         //cache
         ContentWriterCache.setContent(content);
         ContentWriterCache.setTitle(source.title);
+        ContentWriterCache.setPath(source.category + source.title + ".md");
     }
 
     function handleChangeConetnt({ html, text }) {
@@ -191,6 +194,7 @@ export default function WriterTab(props) {
         setTimeout(function () {
             title.current = "";
             category.current = "";
+            isCreateed.current = true;
             setContent("");
         }, 500)
     }

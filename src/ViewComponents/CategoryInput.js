@@ -53,13 +53,13 @@ export default function CategoryInput(props) {
             if (signal.aborted) return;
             setCategoryList([...data]);
         }).catch(err => {
-            console.log(err);
+            // console.log(err);
         });
 
         return () => {
             refController.current.abort();
         };
-    }, [props.defaultTitle, props.defaultCategory]);
+    }, [props]);
 
     async function makeNewCategory(name, callback = function () { }) {
         if (name !== "/" && name.endsWith("/")) {
@@ -172,7 +172,7 @@ export default function CategoryInput(props) {
         ));
     }
 
-    console.log("Re-render CategoryInput.");
+    // console.log("Re-render CategoryInput.");
     return (
         <div style={{ marginBottom: 50, height: 30 }}>
             <div className="pg_mm_path_parent">

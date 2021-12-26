@@ -1,15 +1,52 @@
-GET https://api.github.com/search/code?q=react+repo:cuongphuong/memo_data
-Authorization: Token *
+GET https://api.github.com/repos/cuongphuong/memo_data/git/refs/heads/main/
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
 ###
 
-PUT https://api.github.com/repos/cuongphuong/memo_data/contents/Js/post1.json
-Authorization: Token *
+PUT https://api.github.com/repos/cuongphuong/memo_data/contents/folder1sfsdfsdfsdf/sddddddddd.md
+Authorization: Token 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
 Accept: application/vnd.github.v3+json
 
 {
-    "message": "mm: add post 1", 
-    "content": "ewoJInRpdGxlIjogIkphdmFzY3JpcHQgYmFzaWMgc2FtcGxlIiwKCSJjb250ZW50IjogImltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7XFxuaW1wb3J0IFJlYWN0RE9NIGZyb20gJ3JlYWN0LWRvbSc7XFxuaW1wb3J0ICcuL2luZGV4LmNzcyc7XFxuaW1wb3J0IEFwcCBmcm9tICcuL0FwcCc7XFxuaW1wb3J0IHJlcG9ydFdlYlZpdGFscyBmcm9tICcuL3JlcG9ydFdlYlZpdGFscyc7XFxuXFxuUmVhY3RET00ucmVuZGVyKFxcbiAgPFJlYWN0LlN0cmljdE1vZGU+XFxuICAgIDxBcHAgLz5cXG4gIDwvUmVhY3QuU3RyaWN0TW9kZT4sXFxuICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncm9vdCcpXFxuKTtcXG5cXG4vLyBJZiB5b3Ugd2FudCB0byBzdGFydCBtZWFzdXJpbmcgcGVyZm9ybWFuY2UgaW4geW91ciBhcHAsIHBhc3MgYSBmdW5jdGlvblxcbi8vIHRvIGxvZyByZXN1bHRzIChmb3IgZXhhbXBsZTogcmVwb3J0V2ViVml0YWxzKGNvbnNvbGUubG9nKSlcXG4vLyBvciBzZW5kIHRvIGFuIGFuYWx5dGljcyBlbmRwb2ludC4gTGVhcm4gbW9yZTogaHR0cHM6Ly9iaXQubHkvQ1JBLXZpdGFsc1xcbnJlcG9ydFdlYlZpdGFscygpO1xcbiIKCSJjYXRlZ29yeSI6ICJKYXZhc2NsaXB0Igp9"
+    "message": "mm: update", 
+    "content": "LS0tCmlkOiAxNjM5NzMxNTQ0OTk3CnRpdGxlOiBzZGRkZGRkZGRkCmNhdGVnb3J5OiBmb2xkZXIxc2ZzZGZzZGZzZGYvCi0tLQoKfCBIZWFkIHwgSGVhZCB8IEhlYWQgfCBIZWFkIHwgSGVhZCB8IEhlYWQgfAp8IC0tLSB8IC0tLSB8IC0tLSB8IC0tLSB8IC0tLSB8IC0tLSB8CnwgRGF0YSB8IERhdGEgfCBEYXRhIHwgRGF0YSB8IERhdGEgfCBEYXRhIHwKfCBEYXRhIHwgRGF0YSB8IERhdGEgfCBEYXRhIHwgRGF0YSB8IERhdGEgfAp8IERhdGEgfCBEYXRhIHwgRGF0YSB8IERhdGEgfCBEYXRhIHwgRGF0YSB8CnwgRGF0YSB8IERhdGEgfCBEYXRhIHwgRGF0YSB8IERhdGEgfCBEYXRhIHw==",
+    "sha": "002be32434240c6b451f92077035793279f5baf4"
 }
+
+###
+GET https://api.github.com/repos/cuongphuong/memo_data/contents/folder1sfsdfsdfsdf/sddddddddd.md
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
+
+
+###
+POST  https://api.github.com/markdown
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
+
+{
+    "text":"```js\n import React from 'react'; \n```"
+}
+
+
+###
+POST  https://api.github.com/repos/cuongphuong/memo_data/git/trees/53badffa9ab32fa8e1be9ee1bad61a3c3195f907
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
+
+
+###
+GET https://api.github.com/repos/cuongphuong/memo_data/git/trees/76ba6ba67867c6069cbb9c377a0a2c909145c778
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
+
+
+###
+GET https://api.github.com/users/buiducnam
+Authorization: Token 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
+Accept: application/vnd.github.v3+json
+
+
 ###
 
 GET https://api.github.com/repos/cuongphuong/memo_data/contents/Js/post1.json
@@ -17,8 +54,8 @@ Authorization: Token *
 Accept: application/vnd.github.v3+json
 ###
 
-GET https://api.github.com/repos/cuongphuong/memo_data/git/trees/main
-Authorization: Token *
+GET https://api.github.com/repos/cuongphuong/memo_data/git/trees/4e4a543a6dd8e33b4405e79c0f7c45834f1991da
+Authorization: Token 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
 
 ###
 GET https://api.github.com/repos/cuongphuong/memo_data/contents

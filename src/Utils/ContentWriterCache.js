@@ -41,6 +41,13 @@ const ContentWriterCache = (function () {
         return path;
     }
 
+    function getCategory() {
+        let path = writerCache.get("path");
+        if (!path) return "";
+
+        return path.replace(/\/[^/]+.md/gm, "");
+    }
+
     return {
         setTitle: setTitle,
         getTitle: getTitle,
@@ -48,7 +55,8 @@ const ContentWriterCache = (function () {
         getContent: getContent,
         releaseCache: releaseCache,
         setPath: setPath,
-        getPath: getPath
+        getPath: getPath,
+        getCategory: getCategory
     };
 })();
 

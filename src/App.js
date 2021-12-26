@@ -8,6 +8,9 @@ import 'react-notifications/lib/notifications.css';
 import SettingsTab from './LayoutComponents/SettingsTab';
 import { getSingleton as LocalCache } from "./Utils/CacheManager.js";
 import StyleSettings from './ViewComponents/StyleSettings';
+import SettingsCache from './Utils/SettingsCache';
+import { useDispatch } from 'react-redux';
+import * as ReducerAction from './Actions/StyleReducer';
 
 function App() {
     const menuList = ["Search", "List", "Write"];
@@ -20,10 +23,29 @@ function App() {
     // Cache
     const CACHE_KEY = "pg_mm_settings";
     const cache = React.useRef(LocalCache(CACHE_KEY));
+    const dispatch = useDispatch();
 
     React.useEffect(() => {
-        // hub.move("main", "fd1/xx.md").then(data => console.log(data));
-    }, []);
+        function changeStyle(color) {
+            let action = null;
+            switch (color) {
+                case "tomato":
+                    action = ReducerAction.changeToTomatoStyle();
+                    SettingsCache.setTheme("tomato");
+                    dispatch(action);
+                    break;
+                case "blue":
+                    action = ReducerAction.changeToBlueStyle();
+                    SettingsCache.setTheme("blue");
+                    dispatch(action);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        changeStyle(SettingsCache.getTheme());
+    }, [dispatch]);
 
     function onSubmitSuccess(obj) {
         setViewContentObj(obj);

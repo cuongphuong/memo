@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setCategoryList } from '../Actions/ListTabReducer';
 import CategoryListCache from '../Utils/CategoryListCache';
 import * as request from '../API/Github/Request';
+import SettingsCache from '../Utils/SettingsCache';
 
 export default function ListTab(props) {
     const dispatch = useDispatch();
@@ -85,7 +86,11 @@ export default function ListTab(props) {
         <div className="pg_mm_amination">
             {loadding()}
             <Layout.MiddleContent >
-                <span onClick={handleReloadDataCache} className='pg_mm_reload_button'>Reload (Caching for 5s)</span>
+                <span
+                    onClick={handleReloadDataCache}
+                    className='pg_mm_reload_button'>
+                    Reload (Caching {SettingsCache.getCacheMinutes()} minutes)
+                </span>
                 <CategoryList>
                     {categoryList.map((categoryName, index) => <CategoryList.Block
                         handleItemClick={handleItemClick}

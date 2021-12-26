@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import * as ReducerAction from '../Actions/StyleReducer';
 import "./StyleSettings.css";
+import SettingsCache from '../Utils/SettingsCache';
 
 export default function StyleSettings() {
     const dispatch = useDispatch();
@@ -11,10 +12,12 @@ export default function StyleSettings() {
         switch (color) {
             case "tomato":
                 action = ReducerAction.changeToTomatoStyle();
+                SettingsCache.setTheme("tomato");
                 dispatch(action);
                 break;
             case "blue":
                 action = ReducerAction.changeToBlueStyle();
+                SettingsCache.setTheme("blue");
                 dispatch(action);
                 break;
             default:
