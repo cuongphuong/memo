@@ -37,7 +37,7 @@
 }
 
 .pg_mm_view_cls_button {
-  right: 16px;
+  right: 142px;
   background-color: rgb(253, 77, 77);
 }
 
@@ -46,7 +46,7 @@
 }
 
 .pg_mm_view_delete_button {
-  right: 142px;
+  right: 16px;
 }
 
 .pg_mm_view_cls_button:hover {

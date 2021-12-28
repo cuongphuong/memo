@@ -73,7 +73,7 @@ function App() {
 
         switch (selectedMenu) {
             case "Search":
-                return <QuickSearchTab defaultPost={viewContentObj.current} />;
+                return <QuickSearchTab onEdit={onEditFile} defaultPost={viewContentObj.current} />;
             case "List":
                 return <ListTab onEdit={onEditFile} />;
             case "Write":

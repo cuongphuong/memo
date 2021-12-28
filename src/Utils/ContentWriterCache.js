@@ -29,6 +29,7 @@ const ContentWriterCache = (function () {
         writerCache.add("title", "");
         writerCache.add("content", "");
         writerCache.add("path", "");
+        writerCache.add("isUpdate", false);
     }
 
     function setPath(path) {
@@ -45,7 +46,19 @@ const ContentWriterCache = (function () {
         let path = writerCache.get("path");
         if (!path) return "";
 
+        if (!path.includes("/")) return "";
+
         return path.replace(/\/[^/]+.md/gm, "");
+    }
+
+    function setIsUpdate(isUpdate) {
+        writerCache.add("isUpdate", isUpdate);
+    }
+
+    function isUpdate() {
+        let isUpdate = writerCache.get("isUpdate");
+        if (!isUpdate) return false;
+        return isUpdate;
     }
 
     return {
@@ -56,7 +69,9 @@ const ContentWriterCache = (function () {
         releaseCache: releaseCache,
         setPath: setPath,
         getPath: getPath,
-        getCategory: getCategory
+        getCategory: getCategory,
+        setIsUpdate: setIsUpdate,
+        isUpdate: isUpdate
     };
 })();
 

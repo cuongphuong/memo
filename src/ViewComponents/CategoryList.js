@@ -43,15 +43,20 @@ function Block(props) {
                     source={item}
                 />)}
 
-                <dl className="link-list">
-                    {fileList.map((item, index) => <Item
-                        key={index}
-                        name={item.name}
-                        type={item.type}
-                        path={item.path}
-                        handleItemClick={props.handleItemClick}
-                    />)}
-                </dl>
+                {
+                    fileList.length > 0 ?
+                        <dl className="link-list">
+                            {fileList.map((item, index) => <Item
+                                key={index}
+                                name={item.name}
+                                type={item.type}
+                                path={item.path}
+                                handleItemClick={props.handleItemClick}
+                            />)}
+                        </dl>
+                        :
+                        ""
+                }
             </>
         );
     }

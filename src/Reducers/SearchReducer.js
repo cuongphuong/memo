@@ -1,5 +1,5 @@
 let initState = {
-    mdContent: "", // Content for show on view
+    mdContent: null, // Content for show on view
     searchResultList: [], // Search result API
     activeId: null, // ActiveId
     searchKeyWord: ""

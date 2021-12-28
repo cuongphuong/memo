@@ -11,6 +11,7 @@ import 'react-markdown-editor-lite/lib/index.css';
 import { ContentRender } from '../Utils/ContentRender';
 import { useSelector } from 'react-redux';
 import ContentWriterCache from '../Utils/ContentWriterCache';
+// var fs = require('fs');
 
 export default function WriterTab(props) {
     // Use for control sync process
@@ -36,26 +37,27 @@ export default function WriterTab(props) {
     const style = useSelector(state => state.style);
 
     React.useEffect(() => {
-        if (inputPath === ContentWriterCache.getPath() || isCreateed.current) {
+        if (inputPath === ContentWriterCache.isUpdate() || isCreateed.current) {
             title.current = ContentWriterCache.getTitle();
             category.current = ContentWriterCache.getCategory();
             setContent(ContentWriterCache.getContent());
 
-            isCreateed.current = ContentWriterCache.getPath() === "";
+            isCreateed.current = !ContentWriterCache.isUpdate();
             return;
         }
 
         // For update data
         clearPath();
+        ContentWriterCache.setIsUpdate(true);
         ContentWriterCache.setPath(inputPath);
+
+        // fetch API
         refController.current = new AbortController();
         let signal = refController.current.signal;
-        // fetch API
         ContentRender.makeContentObject(inputPath, signal).then(data => {
             if (!data) return;
             title.current = data.title;
             category.current = data.category;
-            console.log(data.category);
             originData.current = {
                 title: data.title,
                 category: data.category,
@@ -72,21 +74,17 @@ export default function WriterTab(props) {
     function handleImageUpload(file, callback) {
         const reader = new FileReader()
         reader.onload = () => {
-            const convertBase64UrlToBlob = (urlData) => {
-                let arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1]
-                let bstr = atob(arr[1])
-                let n = bstr.length
-                let u8arr = new Uint8Array(n)
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n)
-                }
-                return new Blob([u8arr], { type: mime })
+            let fileName = new Date().getTime() + "_" + file.name;
+            let data = {
+                message: `Upload file ${fileName}`,
+                content: reader.result.substr(reader.result.indexOf(',') + 1)
             }
-            const blob = convertBase64UrlToBlob(reader.result);
-            console.log(blob);
-            setTimeout(() => {
-                callback('https://avatars0.githubusercontent.com/u/21263805?s=40&v=4')
-            }, 1000)
+
+            hub.create(data, `Images/${fileName}`).then(res => {
+                if (res && res.content && res.content.download_url) {
+                    callback(res.content.download_url)
+                }
+            });
         }
         reader.readAsDataURL(file)
     }
@@ -177,7 +175,11 @@ export default function WriterTab(props) {
         //cache
         ContentWriterCache.setContent(content);
         ContentWriterCache.setTitle(source.title);
-        ContentWriterCache.setPath(source.category + source.title + ".md");
+        if (!StringUtils.isNullOrEmpty(source.title)) {
+            ContentWriterCache.setPath(source.category + source.title + ".md");
+        } else {
+            ContentWriterCache.setPath(source.category);
+        }
     }
 
     function handleChangeConetnt({ html, text }) {
@@ -191,6 +193,7 @@ export default function WriterTab(props) {
     function handleClearForm() {
         ContentWriterCache.releaseCache();
         setContent("Loadding...");
+
         setTimeout(function () {
             title.current = "";
             category.current = "";
@@ -213,12 +216,18 @@ export default function WriterTab(props) {
                         onClick={handleSubmit}>
                         {isCreateed.current ? "Create" : "Update"}
                     </button>
-                    <button
-                        style={{ ...style.button, width: '5%', height: '40px', float: 'right', backgroundColor: '#dcdcdc' }}
-                        className='pg_mm_write_button'
-                        onClick={handleClearForm}>
-                        Clear
-                    </button>
+
+                    {
+                        !StringUtils.isNullOrEmpty(content)
+                            ?
+                            <button
+                                style={{ ...style.button, width: '5%', height: '40px', float: 'right', backgroundColor: '#dcdcdc' }}
+                                className='pg_mm_write_button'
+                                onClick={handleClearForm}>
+                                Cancel
+                            </button>
+                            : ""
+                    }
                 </>
                 <div style={{ marginTop: '5px' }}></div>
                 <MdEditor

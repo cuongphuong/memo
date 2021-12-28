@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setActiveId, setMdContent, setSearchResultList } from '../Actions/SearchReducer';
 import SearchHistoryCache from '../Utils/SearchHistoryCache';
 
-function QuickSearchTab() {
+function QuickSearchTab(props) {
     // use for control sync process
     const refController = React.useRef(null);
     const style = useSelector(state => state.style);
@@ -72,6 +72,16 @@ function QuickSearchTab() {
         dispatch(setMdContent(source));
     }
 
+    function onEdit(filePath) {
+        props.onEdit(filePath);
+    }
+
+    function onDelete() {
+        let newSearchList = searchResultList.filter(p => p.id !== mdContent.id);
+        dispatch(setMdContent(null));
+        dispatch(setSearchResultList(newSearchList));
+    }
+
     function renderSearchList() {
         return (
             <>
@@ -107,7 +117,7 @@ function QuickSearchTab() {
         )
     }
 
-    console.log("re-render QuikTabSearch.")
+    console.log(mdContent);
     return (
         <div className="pg_mm_amination">
             <Layout.SiderBar>
@@ -127,7 +137,15 @@ function QuickSearchTab() {
                 {renderSearchList()}
             </Layout.SiderBar>
             <Layout.RightContent>
-                <Viewer source={mdContent} />
+                {
+                    mdContent !== null ?
+                        <Viewer
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                            source={mdContent}
+                        /> : ""
+                }
+
                 <div className='pg_mm_logo unselectable'>
                     <img width="350px"
                         src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/logo.png"

@@ -22,6 +22,10 @@ const CategoryListCache = (function () {
      * @param {Arrays} trees Using fetch tree Github API
      */
     function setOrUpdateCache(trees) {
+        if (trees) {
+            trees = trees.filter(p => !p.path.startsWith("Images/") && p.path !== "Images");
+        }
+
         categoryCache.add("tree", trees);
     }
 

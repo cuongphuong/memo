@@ -106,8 +106,8 @@ export default function CategoryInput(props) {
     function handleKeyInput(evt) {
         let key = evt.which || evt.keyCode || evt.charCode;
         if (/*key === 8 || */ key === 46 && pathDataList.current.length > 0) {
-            let lastItem = pathDataList.current.at(-1);
-            evt.target.value = lastItem.name.substring(0, lastItem.name.length - 1);
+            // let lastItem = pathDataList.current.at(-1);
+            // evt.target.value = lastItem.name.substring(0, lastItem.name.length - 1);
             let tmpList = [...pathDataList.current];
             tmpList.pop();
             pathDataList.current = tmpList;
