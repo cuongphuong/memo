@@ -17,7 +17,7 @@
 }
 
 .pg_mm_style_settings:hover {
-  width: 60px;
+  width: 90px;
 }
 
 .pg_mm_style_settings > span:nth-child(1) {
@@ -35,5 +35,14 @@
   height: 20px;
   margin-top: 5px;
   background-color: rgb(34, 184, 238);
+  margin-left: 5px;
+}
+
+.pg_mm_style_settings>span:nth-child(3) {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  background-color: #ebaecb;
   margin-left: 5px;
 }

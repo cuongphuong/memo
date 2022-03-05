@@ -11,6 +11,7 @@
 }
 
 .pg_mm_view_popup {
+  /* display: none; */
   position: fixed;
   top: 60px;
   left: 0;
@@ -21,7 +22,7 @@
   overflow: scroll;
   padding: 0 10px;
   animation-name: open;
-  animation-duration: 0.5s;
+  animation-duration: 0.2s;
 }
 
 .pg_mm_view_cls_button,
@@ -63,7 +64,7 @@
 
 @keyframes open {
   0% {
-    margin-left: 200px;
+    margin-left: 50px;
     opacity: 0;
   }
 
@@ -77,10 +78,11 @@
   0% {
     margin-left: 0px;
     opacity: 1;
+    display: block;
   }
 
   100% {
-    margin-left: 200px;
+    margin-left: -50px;
     opacity: 0;
     display: none;
   }

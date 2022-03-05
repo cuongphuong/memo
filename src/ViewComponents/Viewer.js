@@ -22,10 +22,27 @@ export default function Viewer(props) {
         if (!window.confirm("Do you want to delete " + props.source.filePath) === true) {
             return;
         }
-        await deleteFile(props.source.filePath);
-        NotificationManager.info("Deleted.");
+        try {
+            await deleteFile(props.source.filePath);
+            NotificationManager.info("Deleted.");
+            props.onDelete(true);
+        } catch (err) {
+            props.onDelete(false);
+        }
+    }
 
-        props.onDelete();
+    async function handleCopyLink() {
+        // Make link
+        let url = document.URL;
+        if (url.endsWith("/")) {
+            let list = url.split("/").filter(p => p !== "");
+            url = list.join("/");
+        }
+
+        let link = url + "?key=" + source.id;
+
+        await navigator.clipboard.writeText(link);
+        NotificationManager.info("Copied: " + link);
     }
 
     return (
@@ -40,7 +57,15 @@ export default function Viewer(props) {
             }
             <div className="section-container html-wrap">
                 <div className="custom-html-style">
-                    <h2 style={{ margin: '5px 0' }}>{source.title}</h2>
+                    <h2 style={{ margin: '5px 0' }}>
+                        {source.title}
+                        <img onClick={handleCopyLink}
+                            style={{ marginLeft: 10, cursor: 'pointer' }}
+                            src='/memo/icon/copy.png'
+                            width={20}
+                            alt='copy'
+                        />
+                    </h2>
                     {source.title ? <hr style={{ margin: '10px 0' }} /> : ''}
                     <div className='pg_mm_view_content'>
                         <ReactMarkdown children={source.content} remarkPlugins={[remarkGfm]} />

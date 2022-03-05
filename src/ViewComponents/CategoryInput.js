@@ -53,7 +53,7 @@ export default function CategoryInput(props) {
             if (signal.aborted) return;
             setCategoryList([...data]);
         }).catch(err => {
-            // console.log(err);
+            console.log(err);
         });
 
         return () => {

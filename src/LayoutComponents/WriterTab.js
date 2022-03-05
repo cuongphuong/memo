@@ -6,6 +6,7 @@ import * as hub from '../Utils/GithubCRUD';
 import { StringUtils } from '../Utils/StringUtils';
 import { NotificationManager } from 'react-notifications';
 import CategoryInput from '../ViewComponents/CategoryInput';
+import { getSingleton as LocalCache } from '../Utils/CacheManager';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
 import { ContentRender } from '../Utils/ContentRender';
@@ -37,6 +38,16 @@ export default function WriterTab(props) {
     const style = useSelector(state => state.style);
 
     React.useEffect(() => {
+        // Check settings
+        const CACHE_KEY = "pg_mm_settings";
+        const cache = LocalCache(CACHE_KEY);
+        const TOKEN_KEY = cache.has("accessKey") ? cache.get("accessKey") : "";
+
+        if (StringUtils.isNullOrEmpty(TOKEN_KEY)) {
+            props.onFailed("Settings");
+            return;
+        }
+
         if (inputPath === ContentWriterCache.isUpdate() || isCreateed.current) {
             title.current = ContentWriterCache.getTitle();
             category.current = ContentWriterCache.getCategory();
@@ -69,7 +80,7 @@ export default function WriterTab(props) {
         return () => {
             refController.current.abort();
         }
-    }, [clearPath, inputPath])
+    }, [clearPath, inputPath, props])
 
     function handleImageUpload(file, callback) {
         const reader = new FileReader()
@@ -207,7 +218,11 @@ export default function WriterTab(props) {
             <Layout.MiddleContent>
                 <>
                     <div style={{ width: "85%", height: 90, float: 'left' }}>
-                        <CategoryInput defaultTitle={title.current} defaultCategory={category.current} onChange={handleChangeCategory} />
+                        <CategoryInput
+                            defaultTitle={title.current}
+                            defaultCategory={category.current}
+                            onChange={handleChangeCategory}
+                        />
                     </div>
                     {/* Save button  */}
                     <button

@@ -9,7 +9,7 @@ const SettingsCache = (function () {
         if (settingsCache.has("cacheTime"))
             return settingsCache.get("cacheTime");
         else
-            return null;
+            return 1200000;
     }
 
     function setCacheTimeMinute(cacheTime) {
@@ -20,7 +20,7 @@ const SettingsCache = (function () {
         if (settingsCache.has("urlRepository"))
             return settingsCache.get("urlRepository");
         else
-            return null;
+            return "https://github.com/cuongphuong/memo_data";
     }
 
     function setUrlRepository(urlRepository) {
@@ -31,7 +31,7 @@ const SettingsCache = (function () {
         if (settingsCache.has("requestTimeout"))
             return settingsCache.get("requestTimeout");
         else
-            return null;
+            return 5000;
     }
 
     function setRequestTimeout(requestTimeout) {

@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { StringUtils } from '../Utils/StringUtils';
 
 function List({ children }) {
     return (
@@ -30,9 +29,10 @@ function ListItem({ source = {
     }
 
     function truncPathListItem(strPath) {
-        let tmpPathList = strPath.split("/");
-        tmpPathList = tmpPathList.filter(p => !StringUtils.isNullOrEmpty(p));
-        return tmpPathList.pop();
+        // let tmpPathList = strPath.split("/");
+        // tmpPathList = tmpPathList.filter(p => !StringUtils.isNullOrEmpty(p));
+        // return tmpPathList.pop();
+        return strPath;
     }
 
     return (
@@ -44,9 +44,9 @@ function ListItem({ source = {
             <h3 className="pg_mm_trunc">{source.title}</h3>
             <p className="pg_mm_trunc">{source.content}</p>
             <div className="pg_mm_list_item_info">
-                <span className="pg_mm_trunc">{`${source.id}`}</span>
+                {/* <span className="pg_mm_trunc">{`${source.id}`}</span> */}
                 <span
-                    style={style.headerMenu}
+                    style={style.category}
                     className="pg_mm_trunc">{truncPathListItem(source.category)}
                 </span>
             </div>

@@ -1,26 +1,33 @@
 import { RequestAPI as request } from '../../Utils/RequestAPI';
-import { getSingleton as LocalCache } from '../../Utils/CacheManager';
+import { StringUtils } from '../../Utils/StringUtils';
+import SettingsCache from '../../Utils/SettingsCache';
 
-const CACHE_KEY = "pg_mm_settings";
-const cache = LocalCache(CACHE_KEY);
-const REPOSITORY_SOURCE = cache.has("urlRepository")
-    ? cache.get("urlRepository").replaceAll("https://github.com/", "")
-    : "";
+const REPOSITORY_SOURCE = SettingsCache.getUrlRepository().replaceAll("https://github.com/", "");
+const TIME_OUT = SettingsCache.getRequestTimeout();
+const TOKEN_KEY = SettingsCache.getAccessKey();
+const USE_NAME = SettingsCache.getUserName();
+const E_MAIL = SettingsCache.getEmail();
 
-const TIME_OUT = cache.has("requestTimeout") ? "Token " + cache.get("requestTimeout") : "";
-const TOKEN_KEY = cache.has("accessKey") ? "Token " + cache.get("accessKey") : "";
-const USE_NAME = cache.has("userName") ? "Token " + cache.get("userName") : "";
-const E_MAIL = cache.has("email") ? "Token " + cache.get("email") : "";
-
-// Request config
-request.add_config({
+let config = {
     base_url: "https://api.github.com",
     timeout: TIME_OUT,
     in_headers: {
-        Authorization: TOKEN_KEY,
         Accept: "application/vnd.github.v3+json",
     }
-});
+};
+
+if (TOKEN_KEY && !StringUtils.isNullOrEmpty(TOKEN_KEY)) {
+    config = {
+        ...config,
+        in_headers: {
+            ...config.in_headers,
+            Authorization: "Token " + TOKEN_KEY
+        }
+    }
+}
+
+// Request config
+request.add_config(config);
 
 const author = {
     name: USE_NAME,
@@ -57,8 +64,7 @@ export async function readContentByPath(path, signal) {
         method: "GET",
         signal: signal
     }).catch(err => {
-        console.log(err)
-        return null;
+        throw err;
     });
 
     return result;

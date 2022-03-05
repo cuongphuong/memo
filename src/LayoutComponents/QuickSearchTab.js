@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setActiveId, setMdContent, setSearchResultList } from '../Actions/SearchReducer';
 import SearchHistoryCache from '../Utils/SearchHistoryCache';
+import { StringUtils } from '../Utils/StringUtils';
 
 function QuickSearchTab(props) {
     // use for control sync process
@@ -27,6 +28,37 @@ function QuickSearchTab(props) {
     let doneTypingInterval = 600;  // time in ms (600ms)
 
     useEffect(() => {
+        async function searchByPramater() {
+            const queryParams = new URLSearchParams(window.location.search);
+            let keyword = queryParams.get('key');
+
+            // Loại bỏ ID keyword
+            if (keyword && keyword.toUpperCase().startsWith("ID:")) {
+                keyword = keyword.substring(3);
+            }
+
+            if (!StringUtils.isNullOrEmpty(keyword)) {
+                inputObj.current.value = "ID:" + keyword;
+            }
+
+            // Set Input
+            refController.current = new AbortController();
+            let signal = refController.current.signal;
+            // fetch API
+            setIsProcessing(true);
+            let apiResultContentList = await ContentRender.search(keyword, signal);
+            if (apiResultContentList && apiResultContentList.length > 0) {
+                SearchHistoryCache.insertKey(keyword);
+                dispatch(setSearchResultList(apiResultContentList));
+
+                if (apiResultContentList.length > 0) {
+                    dispatch(setActiveId(apiResultContentList[0].id));
+                    dispatch(setMdContent(apiResultContentList[0]));
+                }
+            }
+            setIsProcessing(false);
+        }
+
         refController.current = new AbortController();
         inputObj.current.focus();
 
@@ -34,11 +66,13 @@ function QuickSearchTab(props) {
         let cacheKeywordList = SearchHistoryCache.getTopKeyWord();
         setSearchCacheList(cacheKeywordList);
 
+        searchByPramater();
+
         return () => {
-            console.log("Clean QuikTabSearch")
+            window.history.replaceState("", "", "/");
             refController.current.abort();
         }
-    }, [])
+    }, [dispatch])
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);
@@ -63,6 +97,10 @@ function QuickSearchTab(props) {
         if (apiResultContentList && apiResultContentList.length > 0) {
             SearchHistoryCache.insertKey(keyword);
             dispatch(setSearchResultList(apiResultContentList));
+
+            if (apiResultContentList.length > 0) {
+                handleChooseItem(apiResultContentList[0]);
+            }
         }
         setIsProcessing(false);
     }
@@ -76,7 +114,12 @@ function QuickSearchTab(props) {
         props.onEdit(filePath);
     }
 
-    function onDelete() {
+    function onDelete(isSuccess) {
+        if (!isSuccess) {
+            alert("403 :((");
+            return;
+        }
+
         let newSearchList = searchResultList.filter(p => p.id !== mdContent.id);
         dispatch(setMdContent(null));
         dispatch(setSearchResultList(newSearchList));
@@ -117,7 +160,6 @@ function QuickSearchTab(props) {
         )
     }
 
-    console.log(mdContent);
     return (
         <div className="pg_mm_amination">
             <Layout.SiderBar>
@@ -129,6 +171,12 @@ function QuickSearchTab(props) {
                     type="text"
                     className="pg_mm_search_input"
                     placeholder="Type for search..."
+                />
+                <img onClick={() => inputObj.current.value = ""}
+                    src='/memo/icon/clear.png'
+                    width={25}
+                    alt='copy'
+                    className='pg_mm_fixed_clearinput'
                 />
                 <datalist id="cacheList">
                     {searchCacheList.map((item, index) => <option key={index} value={item} />)}

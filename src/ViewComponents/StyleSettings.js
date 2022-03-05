@@ -20,6 +20,11 @@ export default function StyleSettings() {
                 SettingsCache.setTheme("blue");
                 dispatch(action);
                 break;
+            case "violet":
+                action = ReducerAction.changeToVioletStyle();
+                SettingsCache.setTheme("violet");
+                dispatch(action);
+                break;
             default:
                 break;
         }
@@ -29,6 +34,7 @@ export default function StyleSettings() {
         <div className='pg_mm_style_settings unselectable'>
             <span onClick={() => changeStyle("tomato")}></span>
             <span onClick={() => changeStyle("blue")}></span>
+            <span onClick={() => changeStyle("violet")}></span>
         </div>
     )
 }

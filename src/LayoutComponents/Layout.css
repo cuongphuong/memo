@@ -38,7 +38,7 @@
 
 .pg_mm_amination {
   animation-name: example;
-  animation-duration: 0.1s;
+  animation-duration: 0.2s;
   min-height: calc(100vh - 60px);
   max-height: calc(100vh - 60px);
 }
@@ -190,7 +190,7 @@
 }
 
 .pg_mm_list_item > .pg_mm_list_item_info > span {
-  width: 50%;
+  width: 100%;
   display: inline-block;
   box-sizing: border-box;
   overflow: hidden;
@@ -339,4 +339,13 @@ button {
   z-index: 2;
   top: 110px;
   left: 50px;
+}
+
+.pg_mm_fixed_clearinput {
+  position: absolute;
+  /* right: 1px; */
+  top: 73px;
+  z-index: 1;
+  cursor: pointer;
+  margin-left: -29px;
 }

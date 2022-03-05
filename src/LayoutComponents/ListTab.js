@@ -18,17 +18,33 @@ export default function ListTab(props) {
     const [dataView, setDataView] = React.useState(null);
     const [isLoadding, setIsLoadding] = React.useState(false);
 
-    async function fetchTreesList(callback = function (trees) { }) {
-        let latestCommit = await request.getRef("heads/main");
-        let trees = await request.getTree(latestCommit + '?recursive=true');
-        callback(trees);
+    async function fetchTreesList(callback = function () { }) {
+        try {
+            let latestCommit = await request.getRef("heads/main");
+            let trees = await request.getTree(latestCommit + '?recursive=true');
+            callback(trees);
+        } catch (err) {
+            // Redirect to Setting screen.
+            props.onFailed("Settings");
+        };
     }
 
     React.useEffect(() => {
+        async function getTreeList(callback = function () { }) {
+            try {
+                let latestCommit = await request.getRef("heads/main");
+                let trees = await request.getTree(latestCommit + '?recursive=true');
+                callback(trees);
+            } catch (err) {
+                // Redirect to Setting screen.
+                props.onFailed("Settings");
+            };
+        }
+
         // Checking cache
         if (!CategoryListCache.isCached()) {
             setIsLoadding(true);
-            fetchTreesList(function (trees) {
+            getTreeList(function (trees) {
                 // Re-update cache
                 CategoryListCache.setOrUpdateCache(trees);
                 dispatch(setCategoryList(CategoryListCache.getMainCategory()));
@@ -41,7 +57,7 @@ export default function ListTab(props) {
         return () => {
             setDataView(null);
         }
-    }, [dispatch]);
+    }, [dispatch, props]);
 
     function handleItemClick(path) {
         setIsDisplayPopup("block");
@@ -53,7 +69,7 @@ export default function ListTab(props) {
     function handleClosePopups() {
         setTimeout(function () {
             setIsDisplayPopup("none");
-        }, 300)
+        }, 100)
         setDataView(null);
     }
 
@@ -100,7 +116,7 @@ export default function ListTab(props) {
                 </CategoryList>
                 <div className="pg_mm_view_popup_block">
                     <ViewPopup
-                        onDelete={() => setIsDisplayPopup("none")}
+                        onDelete={(isSuccess) => isSuccess ? setIsDisplayPopup("none") : props.onFailed("Settings")}
                         onEdit={(filePath) => props.onEdit(filePath)}
                         onClose={handleClosePopups}
                         source={dataView}

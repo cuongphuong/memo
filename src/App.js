@@ -6,7 +6,7 @@ import WriterTab from './LayoutComponents/WriterTab';
 import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import SettingsTab from './LayoutComponents/SettingsTab';
-import { getSingleton as LocalCache } from "./Utils/CacheManager.js";
+// import { getSingleton as LocalCache } from "./Utils/CacheManager.js";
 import StyleSettings from './ViewComponents/StyleSettings';
 import SettingsCache from './Utils/SettingsCache';
 import { useDispatch } from 'react-redux';
@@ -21,8 +21,8 @@ function App() {
     const setViewContentObj = (obj) => { viewContentObj.current = obj; }
 
     // Cache
-    const CACHE_KEY = "pg_mm_settings";
-    const cache = React.useRef(LocalCache(CACHE_KEY));
+    // const CACHE_KEY = "pg_mm_settings";
+    // const cache = React.useRef(LocalCache(CACHE_KEY));
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -37,6 +37,11 @@ function App() {
                 case "blue":
                     action = ReducerAction.changeToBlueStyle();
                     SettingsCache.setTheme("blue");
+                    dispatch(action);
+                    break;
+                case "violet":
+                    action = ReducerAction.changeToVioletStyle();
+                    SettingsCache.setTheme("violet");
                     dispatch(action);
                     break;
                 default:
@@ -66,18 +71,22 @@ function App() {
     }
 
     function rederTabView() {
-        let items = cache.current.getAll();
-        if (cache.current.isExpired() || Object.keys(items).length === 0) {
-            return <SettingsTab />;
-        }
+        // let items = cache.current.getAll();
+        // if (cache.current.isExpired() || Object.keys(items).length === 0) {
+        //     return <SettingsTab />;
+        // }
 
         switch (selectedMenu) {
             case "Search":
                 return <QuickSearchTab onEdit={onEditFile} defaultPost={viewContentObj.current} />;
             case "List":
-                return <ListTab onEdit={onEditFile} />;
+                return <ListTab onEdit={onEditFile} onFailed={setSelectedMenu} />;
             case "Write":
-                return <WriterTab updateAction={updateAction} actionSubmit={onSubmitSuccess} />
+                return <WriterTab
+                    updateAction={updateAction}
+                    actionSubmit={onSubmitSuccess}
+                    onFailed={setSelectedMenu}
+                />
             case "Settings":
                 return <SettingsTab />;
             default:

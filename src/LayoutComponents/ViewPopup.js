@@ -8,36 +8,24 @@ export default function ViewPopup(props) {
     React.useEffect(() => {
         setStype({
             display: props.display
-        })
+        });
+
         return () => {
         }
     }, [props.display])
 
     function onClosePopup() {
-        setStype({
-            display: "block",
-            animationName: "close",
-            animationDuration: 300
-        });
         props.onClose();
     }
 
     function onEdit(filePath) {
-        setStype({
-            display: "block",
-            animationName: "close",
-            animationDuration: 300
-        });
         props.onEdit(filePath);
     }
 
-    async function onDelete() {
-        setStype({
-            display: "block",
-            animationName: "close",
-            animationDuration: 300
-        });
-        props.onDelete();
+    async function onDelete(isSuccess) {
+        if (!isSuccess) {
+            props.onDelete(isSuccess);
+        }
     }
 
     return (

@@ -9,3 +9,9 @@ export const changeToBlueStyle = () => {
         type: "CHANGE_TO_BLUE_STYLE"
     }
 }
+
+export const changeToVioletStyle = () => {
+    return {
+        type: "CHANGE_TO_VIOLET_STYLE"
+    }
+}

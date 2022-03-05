@@ -52,7 +52,7 @@ export default function SettingsTab() {
                     ref={urlRepositoryInput}
                     className='pg_mm_settings_input'
                     placeholder='URL to repository...'
-                    value="https://github.com/cuongphuong/memo_data"
+                    defaultValue="https://github.com/cuongphuong/memo_data"
                 />
                 <span
                     className='pg_mm_example'>
@@ -65,7 +65,7 @@ export default function SettingsTab() {
                     ref={cacheTimeDayInput}
                     className='pg_mm_settings_input'
                     placeholder='Cache time (ms)...'
-                    value="10"
+                    defaultValue="10"
                 />
                 <span
                     className='pg_mm_example'>
@@ -78,7 +78,7 @@ export default function SettingsTab() {
                     ref={requestTimeoutInput}
                     className='pg_mm_settings_input'
                     placeholder='Request timeout (ms)...'
-                    value="5000"
+                    defaultValue="5000"
                 />
                 <span
                     className='pg_mm_example'>
