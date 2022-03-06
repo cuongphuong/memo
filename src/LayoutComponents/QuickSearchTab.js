@@ -35,10 +35,14 @@ function QuickSearchTab(props) {
             // Loại bỏ ID keyword
             if (keyword && keyword.toUpperCase().startsWith("ID:")) {
                 keyword = keyword.substring(3);
+                inputObj.current.value = "ID:" + keyword;
+            } else {
+                keyword = keyword ? keyword : "";
+                inputObj.current.value = keyword;
             }
 
-            if (!StringUtils.isNullOrEmpty(keyword)) {
-                inputObj.current.value = "ID:" + keyword;
+            if (StringUtils.isNullOrEmpty(keyword)) {
+                inputObj.current.focus();
             }
 
             // Set Input
@@ -60,7 +64,6 @@ function QuickSearchTab(props) {
         }
 
         refController.current = new AbortController();
-        inputObj.current.focus();
 
         // Load cache
         let cacheKeywordList = SearchHistoryCache.getTopKeyWord();
@@ -69,7 +72,7 @@ function QuickSearchTab(props) {
         searchByPramater();
 
         return () => {
-            window.history.replaceState("", "", "/");
+            window.history.replaceState("", "", "/memo");
             refController.current.abort();
         }
     }, [dispatch])
@@ -139,7 +142,7 @@ function QuickSearchTab(props) {
                         </List>
                         :
                         <img className='unselectable' width="100%"
-                            src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/empty.png"
+                            src="/memo/icon/empty.png"
                             alt="empty"
                         />
                 }
@@ -149,7 +152,7 @@ function QuickSearchTab(props) {
                         <div className="pg_mm_search_loadding">
                             <img height="45px"
                                 style={{ position: 'absolute', top: 110 }}
-                                src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                                src="/memo/icon/blue_loading.gif"
                                 alt="loadding..."
                             />
                         </div>
@@ -196,7 +199,7 @@ function QuickSearchTab(props) {
 
                 <div className='pg_mm_logo unselectable'>
                     <img width="350px"
-                        src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/logo.png"
+                        src="/memo/icon/logo.png"
                         alt="loadding..."
                     />
                 </div>

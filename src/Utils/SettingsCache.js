@@ -85,7 +85,7 @@ const SettingsCache = (function () {
         if (settingsCache.has("theme"))
             return settingsCache.get("theme");
         else
-            return "blue";
+            return "violet";
     }
 
     return {

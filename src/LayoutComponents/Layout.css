@@ -36,6 +36,10 @@
   }
 }
 
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .pg_mm_amination {
   animation-name: example;
   animation-duration: 0.2s;
@@ -131,7 +135,7 @@
   height: 40px;
   width: 100%;
   box-sizing: border-box;
-  /* border-radius: 5px; */
+  border-radius: 5px;
   padding: 5px;
 }
 

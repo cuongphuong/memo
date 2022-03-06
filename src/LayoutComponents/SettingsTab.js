@@ -44,6 +44,11 @@ export default function SettingsTab() {
         }, 2000);
     }
 
+    function handleAuthen() {
+        let app_id = "95da9e48d369117d17bb";
+        window.location.href = "https://github.com/login/oauth/authorize?client_id=" + app_id;
+    }
+
     return (
         <div className="pg_mm_amination">
             <Layout.MiddleContent >
@@ -129,6 +134,13 @@ export default function SettingsTab() {
                     onClick={handleSave}
                     className='pg_mm_settings_submit'>
                     Save
+                </button>
+
+                <button
+                    style={style.button}
+                    onClick={(handleAuthen)}
+                    className='pg_mm_settings_submit'>
+                    GitHub identity
                 </button>
             </Layout.MiddleContent>
         </div>

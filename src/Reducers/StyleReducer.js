@@ -20,7 +20,8 @@ const orangeStyle = {
     },
     button: {
         backgroundColor: "#e58c8a",
-        color: "#fff"
+        color: "#fff",
+        marginRight: 5
     },
     input: {
         outline: "none",
@@ -44,12 +45,13 @@ const blueStyle = {
         border: "solid #84d9cc 1px"
     },
     borderLineHover: {
-        border: "solid 1px #3dab9b",
-        boxShadow: "1px 1px 5px 1px #3dab9b"
+        border: "solid 1px #68d4c4",
+        boxShadow: "1px 1px 5px 1px #68d4c4"
     },
     button: {
         backgroundColor: "#3dab9b",
-        color: "#fff"
+        color: "#fff",
+        marginRight: 5
     },
     input: {
         outline: "none",
@@ -76,7 +78,8 @@ const violetStyle = {
     },
     button: {
         backgroundColor: "#ebaecb",
-        color: "#fff"
+        color: "#fff",
+        marginRight: 5
     },
     input: {
         outline: "none",
@@ -84,7 +87,7 @@ const violetStyle = {
     }
 }
 
-const StyleReducer = (state = blueStyle, action) => {
+const StyleReducer = (state = violetStyle, action) => {
     switch (action.type) {
         case 'CHANGE_TO_TOMATO_STYLE': {
             return orangeStyle;

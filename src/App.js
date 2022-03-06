@@ -11,18 +11,15 @@ import StyleSettings from './ViewComponents/StyleSettings';
 import SettingsCache from './Utils/SettingsCache';
 import { useDispatch } from 'react-redux';
 import * as ReducerAction from './Actions/StyleReducer';
+import { StringUtils } from './Utils/StringUtils';
 
 function App() {
     const menuList = ["Search", "List", "Write"];
     // state
-    const [selectedMenu, setSelectedMenu] = React.useState(menuList[0]);
+    const [selectedMenu, setSelectedMenu] = React.useState(menuList[1]);
     const viewContentObj = React.useRef(null);
     const editPath = React.useRef(null);
     const setViewContentObj = (obj) => { viewContentObj.current = obj; }
-
-    // Cache
-    // const CACHE_KEY = "pg_mm_settings";
-    // const cache = React.useRef(LocalCache(CACHE_KEY));
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -49,7 +46,35 @@ function App() {
             }
         }
 
+        /** Set type */
         changeStyle(SettingsCache.getTheme());
+
+        /** Check url search */
+        const queryParams = new URLSearchParams(window.location.search);
+        let keyword = queryParams.get('key');
+        if (!StringUtils.isNullOrEmpty(keyword)) {
+            setSelectedMenu("Search");
+        }
+
+        /** Ủy quyền login */
+        let code = queryParams.get('code');
+
+        if (!StringUtils.isNullOrEmpty(code)) {
+            console.log(code);
+            // let client_id = "95da9e48d369117d17bb";
+            // let client_secret = "708d1c95ff72410573b335bf340879ea0651a232";
+            // fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, {
+            //     method: "POST",
+            //     headers: { "Accept": "application/json" }
+            // }).then(res => res.json())
+            //     .then(data => {
+            //         console.log(data);
+            //         SettingsCache.setAccessKey(data.access_token);
+            //     }).catch(err => {
+            //         console.log(err);
+            //     })
+            setSelectedMenu("Settings");
+        }
     }, [dispatch]);
 
     function onSubmitSuccess(obj) {
