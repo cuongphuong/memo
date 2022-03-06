@@ -353,3 +353,10 @@ button {
   cursor: pointer;
   margin-left: -29px;
 }
+
+.pg_mm_show_accesskey{
+  color: #333;
+  margin-left: 10px;
+  display: inline-block;
+  cursor: pointer;
+}

@@ -20,7 +20,7 @@ export default function App() {
         <Routes>
             <Route exact path="/" element={<HomePage />} />
             <Route exact path="/memo" element={<HomePage />} />
-            <Route exact path="/memo/auth" element={<GithubAuthenticate />} />
+            <Route exact path="/auth" element={<GithubAuthenticate />} />
         </Routes>
     )
 }

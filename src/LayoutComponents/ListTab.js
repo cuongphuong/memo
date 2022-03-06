@@ -91,7 +91,7 @@ export default function ListTab(props) {
         if (isLoadding) {
             return (
                 <img className='pg_mm_list_loadding unselectable' width="50px"
-                    src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"
+                    src="/memo/icon/blue_loading.gif"
                     alt="empty"
                 />
             )
@@ -102,18 +102,26 @@ export default function ListTab(props) {
         <div className="pg_mm_amination">
             {loadding()}
             <Layout.MiddleContent >
+
+                {/* Category header */}
                 <span
                     onClick={handleReloadDataCache}
                     className='pg_mm_reload_button'>
                     Reload (Caching {SettingsCache.getCacheMinutes()} minutes)
                 </span>
+
+                {/* Category content view */}
                 <CategoryList>
-                    {categoryList.map((categoryName, index) => <CategoryList.Block
-                        handleItemClick={handleItemClick}
-                        key={index}
-                        name={categoryName}
-                    />)}
+                    {
+                        categoryList.map((categoryName, index) => <CategoryList.Block
+                            handleItemClick={handleItemClick}
+                            key={index}
+                            name={categoryName}
+                        />)
+                    }
                 </CategoryList>
+
+                {/* Popup view */}
                 <div className="pg_mm_view_popup_block">
                     <ViewPopup
                         onDelete={(isSuccess) => isSuccess ? setIsDisplayPopup("none") : props.onFailed("Settings")}
@@ -123,6 +131,7 @@ export default function ListTab(props) {
                         display={isDisplayPopup}
                     />
                 </div>
+
             </Layout.MiddleContent >
         </div>
     )

@@ -4,7 +4,9 @@ import { NotificationManager } from 'react-notifications';
 import './SettingsTab.css';
 import { useSelector } from 'react-redux';
 import SettingsCache from '../Utils/SettingsCache';
-// import { deleteAppAuthorization } from '../API/Github/Request';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
+import { faArrowAltCircleRight, faSave, faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons"
 
 export default function SettingsTab() {
     const urlRepositoryInput = React.useRef(null);
@@ -17,12 +19,17 @@ export default function SettingsTab() {
 
     const style = useSelector(state => state.style);
     const app_id = "95da9e48d369117d17bb";
+    const [isView, setIsView] = React.useState(false);
 
     React.useEffect(() => {
         urlRepositoryInput.current.value = SettingsCache.getUrlRepository();
         cacheTimeDayInput.current.value = SettingsCache.getCacheMinutes();
         requestTimeoutInput.current.value = SettingsCache.getRequestTimeout();
-        accessKeyInput.current.value = SettingsCache.getAccessKey();
+        if (SettingsCache.getAccessKey()) {
+            let tokenSet = SettingsCache.getAccessKey();
+            accessKeyInput.current.value = tokenSet;
+        }
+
         userNameInput.current.value = SettingsCache.getUserName();
         emailInput.current.value = SettingsCache.getEmail();
         if (SettingsCache.getAvatarUrl())
@@ -50,13 +57,18 @@ export default function SettingsTab() {
     }
 
     function handleAuthen() {
-        window.location.href = "https://github.com/login/oauth/authorize?client_id=" + app_id;
+        window.location.href = "https://github.com/login/oauth/authorize?client_id=" + app_id
+            + "&scope=public_repo";
     }
 
     async function logout() {
         try {
             // deleteAppAuthorization(app_id);
             SettingsCache.releaseCache();
+            NotificationManager.info("Success");
+            setTimeout(function () {
+                window.location.reload();
+            }, 1000);
         } catch (err) {
             NotificationManager.err("err");
         }
@@ -72,10 +84,6 @@ export default function SettingsTab() {
                     placeholder='URL to repository...'
                     defaultValue="https://github.com/cuongphuong/memo_data"
                 />
-                <span
-                    className='pg_mm_example'>
-                    Repo for save data ex: https://github.com/cuongphuong/memo_data
-                </span>
 
                 <br />
                 <input
@@ -85,10 +93,6 @@ export default function SettingsTab() {
                     placeholder='Cache time (ms)...'
                     defaultValue="10"
                 />
-                <span
-                    className='pg_mm_example'>
-                    Cache time (minutes) ex: 5 minutes
-                </span>
 
                 <br />
                 <input
@@ -98,26 +102,22 @@ export default function SettingsTab() {
                     placeholder='Request timeout (ms)...'
                     defaultValue="5000"
                 />
-                <span
-                    className='pg_mm_example'>
-                    Request timeout (ms) ex: 5000 (5 seconds)
-                </span>
 
                 <h3 className='pg_mm_settings_area'>Github account setting</h3>
 
                 <input
+                    type={isView ? "text" : "password"}
                     ref={accessKeyInput}
                     className='pg_mm_settings_input'
                     placeholder='Access key (if private repository)...'
                 />
-                <span
-                    className='pg_mm_example'>
-                    Access key, get
-                    <a
-                        target="_blank"
-                        href='https://github.com/settings/tokens'
-                        rel="noreferrer"> here
-                    </a> ex: ghp_ILEBZ7OZbzmnMd33z8MwStkSvp6zQq1MDYHQ
+                <span className='pg_mm_show_accesskey'>
+                    {
+                        !isView ?
+                            <FontAwesomeIcon icon={faEyeSlash} onClick={() => setIsView(true)} />
+                            :
+                            <FontAwesomeIcon icon={faEye} onClick={() => setIsView(false)} />
+                    }
                 </span>
 
                 <br />
@@ -126,10 +126,6 @@ export default function SettingsTab() {
                     className='pg_mm_settings_input'
                     placeholder='Username github...'
                 />
-                <span
-                    className='pg_mm_example'>
-                    Github Username
-                </span>
 
                 <br />
                 <input
@@ -137,10 +133,6 @@ export default function SettingsTab() {
                     className='pg_mm_settings_input'
                     placeholder='Email...'
                 />
-                <span
-                    className='pg_mm_example'>
-                    Email: xxx@gmail.com
-                </span>
 
                 {/*  Avatar */}
                 {SettingsCache.getAvatarUrl() ? <> <br /><img style={style.button} width={50} ref={avatarViewer} alt="avatar"></img></> : ""}
@@ -149,7 +141,8 @@ export default function SettingsTab() {
                     style={style.button}
                     onClick={handleSave}
                     className='pg_mm_settings_submit'>
-                    Save
+                    <FontAwesomeIcon icon={faSave} />
+                    <span>  Save</span>
                 </button>
 
                 {SettingsCache.getAccessKey() ?
@@ -157,16 +150,19 @@ export default function SettingsTab() {
                         style={style.button}
                         onClick={(logout)}
                         className='pg_mm_settings_submit'>
-                        Logout
+                        <FontAwesomeIcon icon={faArrowAltCircleRight} />
+                        <span>  Logout</span>
                     </button>
                     :
                     <button
                         style={style.button}
                         onClick={(handleAuthen)}
                         className='pg_mm_settings_submit'>
-                        GitHub identity
+                        <FontAwesomeIcon icon={faGithub} />
+                        <span>  GitHub identity</span>
                     </button>
                 }
+                <font color="#ddd">(©2022 CuongPV10 - v1.0.1)</font>
             </Layout.MiddleContent>
         </div>
     )

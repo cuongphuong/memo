@@ -27,6 +27,7 @@ function Block(props) {
     React.useEffect(() => {
         let categoryList = CategoryListCache.getElementByPath(props.name);
         setRenderList(categoryList);
+
         return () => {
         }
     }, [props.name])

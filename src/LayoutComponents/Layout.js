@@ -1,6 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 import "./Layout.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBarsProgress as faGear } from "@fortawesome/free-solid-svg-icons";
 
 const Layout = ({ children }) => {
     return (
@@ -25,7 +27,7 @@ const HeaderItem = ({ onClick, title, selected }) => {
     const style = useSelector(state => state.style);
 
     if (title === "Settings") {
-        return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item unselectable'>⚙</p>
+        return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item unselectable'><FontAwesomeIcon icon={faGear} /></p>
     }
 
     return (

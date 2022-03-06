@@ -90,6 +90,7 @@ const CategoryListCache = (function () {
             categoryList = [...categoryList, item];
         });
 
+        categoryList = categoryList.sort((a, b) => a.type.length - b.type.length);
         return categoryList;
     }
 
