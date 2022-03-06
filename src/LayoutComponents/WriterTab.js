@@ -150,7 +150,15 @@ export default function WriterTab(props) {
     async function store(data, filePath) {
         setIsProcessing(true);
         if (isCreateed.current) {
-            let response = await hub.create(data, filePath);
+
+            let response
+            try {
+                response = await hub.create(data, filePath);
+            } catch (err) {
+                setIsProcessing(false);
+                NotificationManager.error(err + "");
+            }
+
             if (response && response.commit) {
                 NotificationManager.info(response.commit.html_url, "Commited", 5000, function () {
                     window.open(response.commit.html_url, '_blank').focus();
@@ -162,20 +170,29 @@ export default function WriterTab(props) {
         } else {
             if (title.current !== originData.current.title
                 || category.current !== originData.current.category) {
-                console.log("update path send...")
-                await hub.move("main", inputPath, filePath);
+
+                try {
+                    await hub.move("main", inputPath, filePath);
+                } catch (err) {
+                    setIsProcessing(false);
+                    NotificationManager.error(err + "");
+                }
             }
 
             if (content !== originData.current.content) {
-                console.log("update content send...")
+                let isUpdated = true;
                 await hub.update(data, filePath).catch(err => {
                     NotificationManager.error(err + "");
+                    isUpdated = false;
                 });
+
+                if (isUpdated) {
+                    NotificationManager.info("Updated");
+                    // release cache
+                    ContentWriterCache.releaseCache();
+                }
+                setIsProcessing(false);
             }
-            setIsProcessing(false);
-            NotificationManager.info("Updated");
-            // release cache
-            ContentWriterCache.releaseCache();
         }
     }
 

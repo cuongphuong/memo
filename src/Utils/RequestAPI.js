@@ -38,8 +38,6 @@ export const RequestAPI = (function () {
         baseUrl = configs.base_url;
         timeout = configs.timeout;
         headers = configs.in_headers;
-
-        console.log("Request config ", baseUrl, timeout);
     }
 
     async function request(inp) {

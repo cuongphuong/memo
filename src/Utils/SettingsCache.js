@@ -88,6 +88,21 @@ const SettingsCache = (function () {
             return "violet";
     }
 
+    function getAvatarUrl() {
+        if (settingsCache.has("avatar"))
+            return settingsCache.get("avatar");
+        else
+            return null;
+    }
+
+    function setAvatarUrl(url) {
+        settingsCache.add("avatar", url);
+    }
+
+    function releaseCache() {
+        settingsCache.clear();
+    }
+
     return {
         getCacheTime: getCacheTime,
         setCacheTimeMinute: setCacheTimeMinute,
@@ -103,7 +118,10 @@ const SettingsCache = (function () {
         setEmail: setEmail,
         getCacheMinutes: getCacheMinutes,
         setTheme: setTheme,
-        getTheme: getTheme
+        getTheme: getTheme,
+        setAvatarUrl: setAvatarUrl,
+        getAvatarUrl: getAvatarUrl,
+        releaseCache: releaseCache
     };
 })();
 

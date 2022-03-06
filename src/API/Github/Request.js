@@ -71,6 +71,22 @@ export async function readContentByPath(path, signal) {
 };
 
 /**
+ *  Get user information from token Github
+ * @returns tree 
+ */
+export async function getUserInfomation() {
+    var url = '/user';
+    let result = await request.exe({
+        url: url,
+        method: "GET",
+    }).catch(err => {
+        return null;
+    });
+
+    return result;
+};
+
+/**
  *  Get user information from Github
  * @param username
  * @returns tree 
@@ -207,6 +223,16 @@ export async function updateHead(head, commit) {
         })
     }).catch(err => {
         return null;
+    });
+    return result;
+}
+
+export async function deleteAppAuthorization(client_id) {
+    let result = await request.exe({
+        url: `/applications/${client_id}/grant`,
+        method: 'DELETE'
+    }).catch(err => {
+        throw err;
     });
     return result;
 }

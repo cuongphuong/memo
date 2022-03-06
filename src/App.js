@@ -6,14 +6,26 @@ import WriterTab from './LayoutComponents/WriterTab';
 import { NotificationContainer } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import SettingsTab from './LayoutComponents/SettingsTab';
-// import { getSingleton as LocalCache } from "./Utils/CacheManager.js";
 import StyleSettings from './ViewComponents/StyleSettings';
 import SettingsCache from './Utils/SettingsCache';
 import { useDispatch } from 'react-redux';
 import * as ReducerAction from './Actions/StyleReducer';
 import { StringUtils } from './Utils/StringUtils';
+import { Routes, Route } from 'react-router-dom'
+import GithubAuthenticate from './LayoutComponents/GithubAuthenticate';
 
-function App() {
+
+export default function App() {
+    return (
+        <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/memo" element={<HomePage />} />
+            <Route exact path="/memo/auth" element={<GithubAuthenticate />} />
+        </Routes>
+    )
+}
+
+function HomePage(props) {
     const menuList = ["Search", "List", "Write"];
     // state
     const [selectedMenu, setSelectedMenu] = React.useState(menuList[1]);
@@ -23,6 +35,17 @@ function App() {
     const dispatch = useDispatch();
 
     React.useEffect(() => {
+        /** Set type */
+        changeStyle(SettingsCache.getTheme());
+
+        /** Check url search */
+        const queryParams = new URLSearchParams(window.location.search);
+        let keyword = queryParams.get('key');
+        if (!StringUtils.isNullOrEmpty(keyword)) {
+            setSelectedMenu("Search");
+        }
+
+        /*--------------- Define function inside useEffect -------------------*/
         function changeStyle(color) {
             let action = null;
             switch (color) {
@@ -45,36 +68,9 @@ function App() {
                     break;
             }
         }
+        /*--------------- /Define function inside useEffect -------------------*/
 
-        /** Set type */
-        changeStyle(SettingsCache.getTheme());
 
-        /** Check url search */
-        const queryParams = new URLSearchParams(window.location.search);
-        let keyword = queryParams.get('key');
-        if (!StringUtils.isNullOrEmpty(keyword)) {
-            setSelectedMenu("Search");
-        }
-
-        /** Ủy quyền login */
-        let code = queryParams.get('code');
-
-        if (!StringUtils.isNullOrEmpty(code)) {
-            console.log(code);
-            // let client_id = "95da9e48d369117d17bb";
-            // let client_secret = "708d1c95ff72410573b335bf340879ea0651a232";
-            // fetch(`https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`, {
-            //     method: "POST",
-            //     headers: { "Accept": "application/json" }
-            // }).then(res => res.json())
-            //     .then(data => {
-            //         console.log(data);
-            //         SettingsCache.setAccessKey(data.access_token);
-            //     }).catch(err => {
-            //         console.log(err);
-            //     })
-            setSelectedMenu("Settings");
-        }
     }, [dispatch]);
 
     function onSubmitSuccess(obj) {
@@ -96,16 +92,17 @@ function App() {
     }
 
     function rederTabView() {
-        // let items = cache.current.getAll();
-        // if (cache.current.isExpired() || Object.keys(items).length === 0) {
-        //     return <SettingsTab />;
-        // }
-
         switch (selectedMenu) {
             case "Search":
-                return <QuickSearchTab onEdit={onEditFile} defaultPost={viewContentObj.current} />;
+                return <QuickSearchTab
+                    onEdit={onEditFile}
+                    defaultPost={viewContentObj.current}
+                />;
             case "List":
-                return <ListTab onEdit={onEditFile} onFailed={setSelectedMenu} />;
+                return <ListTab
+                    onEdit={onEditFile}
+                    onFailed={setSelectedMenu}
+                />;
             case "Write":
                 return <WriterTab
                     updateAction={updateAction}
@@ -147,5 +144,3 @@ function App() {
         </Layout>
     );
 }
-
-export default App;

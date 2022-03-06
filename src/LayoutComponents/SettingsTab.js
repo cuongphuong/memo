@@ -4,6 +4,7 @@ import { NotificationManager } from 'react-notifications';
 import './SettingsTab.css';
 import { useSelector } from 'react-redux';
 import SettingsCache from '../Utils/SettingsCache';
+// import { deleteAppAuthorization } from '../API/Github/Request';
 
 export default function SettingsTab() {
     const urlRepositoryInput = React.useRef(null);
@@ -12,8 +13,10 @@ export default function SettingsTab() {
     const accessKeyInput = React.useRef(null);
     const userNameInput = React.useRef(null);
     const emailInput = React.useRef(null);
+    const avatarViewer = React.useRef(null);
 
     const style = useSelector(state => state.style);
+    const app_id = "95da9e48d369117d17bb";
 
     React.useEffect(() => {
         urlRepositoryInput.current.value = SettingsCache.getUrlRepository();
@@ -22,6 +25,8 @@ export default function SettingsTab() {
         accessKeyInput.current.value = SettingsCache.getAccessKey();
         userNameInput.current.value = SettingsCache.getUserName();
         emailInput.current.value = SettingsCache.getEmail();
+        if (SettingsCache.getAvatarUrl())
+            avatarViewer.current.src = SettingsCache.getAvatarUrl();
         return () => { }
     }, [])
 
@@ -45,8 +50,16 @@ export default function SettingsTab() {
     }
 
     function handleAuthen() {
-        let app_id = "95da9e48d369117d17bb";
         window.location.href = "https://github.com/login/oauth/authorize?client_id=" + app_id;
+    }
+
+    async function logout() {
+        try {
+            // deleteAppAuthorization(app_id);
+            SettingsCache.releaseCache();
+        } catch (err) {
+            NotificationManager.err("err");
+        }
     }
 
     return (
@@ -91,6 +104,7 @@ export default function SettingsTab() {
                 </span>
 
                 <h3 className='pg_mm_settings_area'>Github account setting</h3>
+
                 <input
                     ref={accessKeyInput}
                     className='pg_mm_settings_input'
@@ -128,6 +142,8 @@ export default function SettingsTab() {
                     Email: xxx@gmail.com
                 </span>
 
+                {/*  Avatar */}
+                {SettingsCache.getAvatarUrl() ? <> <br /><img style={style.button} width={50} ref={avatarViewer} alt="avatar"></img></> : ""}
                 <br />
                 <button
                     style={style.button}
@@ -136,12 +152,21 @@ export default function SettingsTab() {
                     Save
                 </button>
 
-                <button
-                    style={style.button}
-                    onClick={(handleAuthen)}
-                    className='pg_mm_settings_submit'>
-                    GitHub identity
-                </button>
+                {SettingsCache.getAccessKey() ?
+                    <button
+                        style={style.button}
+                        onClick={(logout)}
+                        className='pg_mm_settings_submit'>
+                        Logout
+                    </button>
+                    :
+                    <button
+                        style={style.button}
+                        onClick={(handleAuthen)}
+                        className='pg_mm_settings_submit'>
+                        GitHub identity
+                    </button>
+                }
             </Layout.MiddleContent>
         </div>
     )
