@@ -9,7 +9,7 @@ const orangeStyle = {
         color: "#333 !important"
     },
     leftBackground: {
-        backgroundColor: "#f0edd9"
+        backgroundColor: "#fdfdf9"
     },
     borderLine: {
         border: "solid tomato 1px"
@@ -39,7 +39,7 @@ const blueStyle = {
         color: "#333 !important"
     },
     leftBackground: {
-        backgroundColor: "#e5f2f0"
+        backgroundColor: "#f5fafa"
     },
     borderLine: {
         border: "solid #84d9cc 1px"

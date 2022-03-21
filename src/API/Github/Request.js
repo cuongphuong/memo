@@ -178,7 +178,7 @@ export async function postTree(tree, base_tree) {
 
     let payload = { tree: tree };
 
-    if (base_tree) payload = { ...payload, base_tree: base_tree }
+    if (base_tree) payload = {...payload, base_tree: base_tree }
 
     let result = await request.exe({
         url: `/repos/${REPOSITORY_SOURCE}/git/trees`,
@@ -234,5 +234,20 @@ export async function deleteAppAuthorization(client_id) {
     }).catch(err => {
         throw err;
     });
+    return result;
+}
+
+export async function markdown(str, signal) {
+    let result = await request.exe({
+        url: "/markdown",
+        method: 'POST',
+        signal: signal,
+        data: JSON.stringify({
+            "text": str
+        })
+    }).catch(err => {
+        throw err;
+    });
+
     return result;
 }

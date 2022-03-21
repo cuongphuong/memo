@@ -1,5 +1,4 @@
-.pg_mm_category_list_main {
-}
+.pg_mm_category_list_main {}
 
 .pg_mm_category_list_main .clear_float {
   content: "";
@@ -69,6 +68,10 @@
 
 .pg_mm_category_list_main .link-list .link-bd {
   margin-left: 170px;
+}
+
+.pg_mm_category_list_main .link-list .link-bd>p {
+  margin-bottom: 10px;
 }
 
 .pg_mm_category_list_main .link-list p,

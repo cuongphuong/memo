@@ -65,3 +65,12 @@ Accept: application/vnd.github.v3+json
 GET https://api.github.com/repos/cuongphuong/memo_data/contents/ParentTest1/test1.md?ref=main
 Authorization: Token *
 Accept: application/vnd.github.v3+json
+
+###
+
+POST https://api.github.com/markdown
+Accept: application/vnd.github.v3+json
+
+{
+    "text":"```js\n import React from 'react'; \n```"
+}

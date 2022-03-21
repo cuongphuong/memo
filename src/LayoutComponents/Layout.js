@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 import "./Layout.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarsProgress as faGear } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faTableList, faFeather, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const Layout = ({ children }) => {
     return (
@@ -23,6 +23,20 @@ const Header = ({ children }) => {
     );
 }
 
+function rederIcon(title) {
+    if (title === "Write") {
+        return <FontAwesomeIcon icon={faFeather} />
+    }
+
+    if (title === "List") {
+        return <FontAwesomeIcon icon={faTableList} />
+    }
+
+    if (title === "Search") {
+        return <FontAwesomeIcon icon={faMagnifyingGlass} />
+    }
+}
+
 const HeaderItem = ({ onClick, title, selected }) => {
     const style = useSelector(state => state.style);
 
@@ -36,7 +50,7 @@ const HeaderItem = ({ onClick, title, selected }) => {
                 className="unselectable"
                 style={selected === title ? style.menuSelected : {}}
                 onClick={() => onClick(title)}>
-                {title}
+                {rederIcon(title)}
             </span>
         </li>
     );

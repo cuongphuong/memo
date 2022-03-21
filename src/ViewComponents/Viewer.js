@@ -1,18 +1,38 @@
 import React from 'react'
 import { NotificationManager } from 'react-notifications';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { deleteFile } from '../Utils/GithubCRUD';
+import renderHTML from 'react-render-html';
+import { markdown } from '../API/Github/Request';
 import "./Viewer.css";
+import "./markdown.css";
+import { StringUtils } from '../Utils/StringUtils';
 
 export default function Viewer(props) {
 
+    // use for control sync process
+    const refController = React.useRef(null);
+    const [content, setContent] = React.useState("");
     let { source } = props;
 
     React.useEffect(() => {
-        return () => {
+        refController.current = new AbortController();
+        let signal = refController.current.signal;
+
+        async function printContent() {
+            // fetch API
+            let htmlMd = await markdown(source.content, signal).catch(err => console.log(err));
+            if (!signal.aborted && !StringUtils.isNullOrEmpty(htmlMd)) {
+                setContent(htmlMd);
+            }
         }
-    }, [props.isPopupView])
+
+        setContent("Loading...")
+        printContent();
+
+        return () => {
+            refController.current.abort();
+        }
+    }, [props.isPopupView, source.content])
 
     function onEdit() {
         props.onEdit(props.source.filePath);
@@ -44,7 +64,7 @@ export default function Viewer(props) {
     }
 
     return (
-        <section className="section sec-html visible">
+        <section className="section sec-html visible markdown-section">
             <span onClick={onEdit} className="pg_mm_view_edit_button">Edit [/]</span>
             <span onClick={onDelete} className="pg_mm_view_delete_button">Delete [#]</span>
             {
@@ -55,7 +75,7 @@ export default function Viewer(props) {
             }
             <div className="section-container html-wrap">
                 <div className="custom-html-style">
-                    <h2 style={{ margin: '5px 0' }}>
+                    <h2 className='pg_mm_title'>
                         {source.title}
                         <img onClick={handleCopyLink}
                             style={{ marginLeft: 10, cursor: 'pointer' }}
@@ -66,7 +86,7 @@ export default function Viewer(props) {
                     </h2>
                     {source.title ? <hr style={{ margin: '10px 0' }} /> : ''}
                     <div className='pg_mm_view_content'>
-                        <ReactMarkdown children={source.content} remarkPlugins={[remarkGfm]} />
+                        {renderHTML(content)}
                     </div>
                 </div>
             </div>

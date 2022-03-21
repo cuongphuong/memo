@@ -25,9 +25,15 @@ export const RequestAPI = (function () {
         let json = await fetch(url, configs, timeout).then(function (response) {
             if (!response.ok) {
                 throw new Error(response.status);
-            } else {
+            }
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
                 return response.json();
             }
+
+            return response.text();
+
         }).catch(err => {
             throw new Error(err);
         });

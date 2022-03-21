@@ -46,14 +46,11 @@ function QuickSearchTab(props) {
                 path = path + ".md";
             }
 
-            console.log(path)
-
             let contentObject = null;
             try {
                 refController.current = new AbortController();
                 let signal = refController.current.signal;
                 contentObject = await ContentRender.makeContentObject(path, signal);
-                console.log(contentObject);
             } catch (err) {
                 console.log(err);
                 setIsProcessing(false);
