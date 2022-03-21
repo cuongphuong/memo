@@ -11,21 +11,21 @@ import SettingsCache from './Utils/SettingsCache';
 import { useDispatch } from 'react-redux';
 import * as ReducerAction from './Actions/StyleReducer';
 import { StringUtils } from './Utils/StringUtils';
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useParams } from 'react-router-dom'
 import GithubAuthenticate from './LayoutComponents/GithubAuthenticate';
 
 
 export default function App() {
     return (
         <Routes>
-            <Route exact path="/" element={<HomePage />} />
-            <Route exact path="/memo" element={<HomePage />} />
-            <Route exact path="/auth" element={<GithubAuthenticate />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/auth" element={<GithubAuthenticate />} />
+            <Route path="/get/:id" element={<HomePage />} />
         </Routes>
     )
 }
 
-function HomePage(props) {
+function HomePage() {
     const menuList = ["Search", "List", "Write"];
     // state
     const [selectedMenu, setSelectedMenu] = React.useState(menuList[1]);
@@ -33,15 +33,14 @@ function HomePage(props) {
     const editPath = React.useRef(null);
     const setViewContentObj = (obj) => { viewContentObj.current = obj; }
     const dispatch = useDispatch();
+    let { id } = useParams();
 
     React.useEffect(() => {
         /** Set type */
         changeStyle(SettingsCache.getTheme());
 
         /** Check url search */
-        const queryParams = new URLSearchParams(window.location.search);
-        let keyword = queryParams.get('key');
-        if (!StringUtils.isNullOrEmpty(keyword)) {
+        if (!StringUtils.isNullOrEmpty(id)) {
             setSelectedMenu("Search");
         }
 
@@ -71,7 +70,7 @@ function HomePage(props) {
         /*--------------- /Define function inside useEffect -------------------*/
 
 
-    }, [dispatch]);
+    }, [dispatch, id]);
 
     function onSubmitSuccess(obj) {
         setViewContentObj(obj);

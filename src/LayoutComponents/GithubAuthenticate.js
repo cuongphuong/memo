@@ -4,7 +4,7 @@ import SettingsCache from '../Utils/SettingsCache';
 import { StringUtils } from '../Utils/StringUtils';
 
 export default function GithubAuthenticate() {
-    const DEFAULT_AUTH_SERVICE = 'https://bdsdb.000webhostapp.com/';
+    const DEFAULT_AUTH_SERVICE = 'https://bdsdb.000webhostapp.com/auth.php/';
     const [message, setMessage] = React.useState("Waiting for check infomation...")
 
     useEffect(() => {
@@ -43,9 +43,7 @@ export default function GithubAuthenticate() {
                                 SettingsCache.setAvatarUrl(avatar_url);
                             }
 
-                            setTimeout(() => {
-                                window.location.href = "/memo";
-                            }, 1000);
+                            window.location.href = "/memo";
                         })
                 }).catch(err => {
                     console.log(err);
@@ -55,7 +53,7 @@ export default function GithubAuthenticate() {
             setMessage(queryParams.get('error_description'));
             setTimeout(() => {
                 window.location.href = "/memo";
-            }, 3000);
+            }, 1000);
         }
         return () => {
         }

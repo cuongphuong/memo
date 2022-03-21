@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setActiveId, setMdContent, setSearchResultList } from '../Actions/SearchReducer';
 import SearchHistoryCache from '../Utils/SearchHistoryCache';
 import { StringUtils } from '../Utils/StringUtils';
+import { useParams } from 'react-router-dom';
 
 function QuickSearchTab(props) {
     // use for control sync process
@@ -27,44 +28,49 @@ function QuickSearchTab(props) {
     const typingTimer = useRef(null); // timer identifier 
     let doneTypingInterval = 600;  // time in ms (600ms)
 
+    let { id } = useParams();
+
     useEffect(() => {
         async function searchByPramater() {
-            const queryParams = new URLSearchParams(window.location.search);
-            let keyword = queryParams.get('key');
 
-            // Loại bỏ ID keyword
-            if (keyword && keyword.toUpperCase().startsWith("ID:")) {
-                keyword = keyword.substring(3);
-                inputObj.current.value = "ID:" + keyword;
-            } else {
-                keyword = keyword ? keyword : "";
-                inputObj.current.value = keyword;
-            }
-
-            if (StringUtils.isNullOrEmpty(keyword)) {
+            /** Check url search */
+            if (StringUtils.isNullOrEmpty(id)) {
                 inputObj.current.focus();
+                return;
             }
 
-            // Set Input
-            refController.current = new AbortController();
-            let signal = refController.current.signal;
-            // fetch API
             setIsProcessing(true);
-            let apiResultContentList = await ContentRender.search(keyword, signal);
-            if (apiResultContentList && apiResultContentList.length > 0) {
-                SearchHistoryCache.insertKey(keyword);
-                dispatch(setSearchResultList(apiResultContentList));
-
-                if (apiResultContentList.length > 0) {
-                    dispatch(setActiveId(apiResultContentList[0].id));
-                    dispatch(setMdContent(apiResultContentList[0]));
-                }
+            let path = id;
+            path = path.replaceAll("+", "/");
+            if (!path.endsWith(".md")) {
+                path = path + ".md";
             }
+
+            console.log(path)
+
+            let contentObject = null;
+            try {
+                refController.current = new AbortController();
+                let signal = refController.current.signal;
+                contentObject = await ContentRender.makeContentObject(path, signal);
+                console.log(contentObject);
+            } catch (err) {
+                console.log(err);
+                setIsProcessing(false);
+            }
+
+            if (!contentObject) {
+                return;
+            }
+
+            let tmpList = [];
+            dispatch(setSearchResultList([...tmpList, contentObject]));
+            dispatch(setActiveId(contentObject.id));
+            dispatch(setMdContent(contentObject));
             setIsProcessing(false);
         }
 
         refController.current = new AbortController();
-
         // Load cache
         let cacheKeywordList = SearchHistoryCache.getTopKeyWord();
         setSearchCacheList(cacheKeywordList);
@@ -75,7 +81,7 @@ function QuickSearchTab(props) {
             window.history.replaceState("", "", "/memo");
             refController.current.abort();
         }
-    }, [dispatch])
+    }, [dispatch, id])
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);

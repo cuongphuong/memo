@@ -34,7 +34,10 @@ export default function Viewer(props) {
     async function handleCopyLink() {
         // Make link
         let url = window.location.protocol + '//' + window.location.host;
-        let link = url + "/memo?key=ID:" + source.id;
+        let id = source.filePath.replaceAll("/", "+");
+        id = id.substr(0, id.length - 3);
+        id = encodeURI(id);
+        let link = url + "/memo/#/get/" + id;
 
         await navigator.clipboard.writeText(link);
         NotificationManager.info("Copied: " + link);
