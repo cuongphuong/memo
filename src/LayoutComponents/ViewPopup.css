@@ -39,7 +39,8 @@
 
 .pg_mm_view_cls_button {
   right: 150px;
-  background-color: rgb(253, 77, 77);
+  background-color: rgb(243, 57, 57);
+  color: #fff;
 }
 
 .pg_mm_view_edit_button {

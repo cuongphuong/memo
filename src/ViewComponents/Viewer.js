@@ -1,37 +1,20 @@
 import React from 'react'
 import { NotificationManager } from 'react-notifications';
 import { deleteFile } from '../Utils/GithubCRUD';
-import renderHTML from 'react-render-html';
-import { markdown } from '../API/Github/Request';
+// import renderHTML from 'react-render-html';
 import "./Viewer.css";
 import "./markdown.css";
-import { StringUtils } from '../Utils/StringUtils';
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
 
 export default function Viewer(props) {
 
-    // use for control sync process
-    const refController = React.useRef(null);
-    const [content, setContent] = React.useState("");
+    const [content, setContent] = React.useState(`Just a link: https://reactjs.com.`);
     let { source } = props;
 
     React.useEffect(() => {
-        refController.current = new AbortController();
-        let signal = refController.current.signal;
-
-        async function printContent() {
-            // fetch API
-            let htmlMd = await markdown(source.content, signal).catch(err => console.log(err));
-            if (!signal.aborted && !StringUtils.isNullOrEmpty(htmlMd)) {
-                setContent(htmlMd);
-            }
-        }
-
-        setContent("Loading...")
-        printContent();
-
-        return () => {
-            refController.current.abort();
-        }
+        setContent(source.content)
     }, [props.isPopupView, source.content])
 
     function onEdit() {
@@ -86,7 +69,7 @@ export default function Viewer(props) {
                     </h2>
                     {source.title ? <hr style={{ margin: '10px 0' }} /> : ''}
                     <div className='pg_mm_view_content'>
-                        {renderHTML(content)}
+                        <ReactMarkdown children={content} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} />
                     </div>
                 </div>
             </div>

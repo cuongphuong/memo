@@ -1,5 +1,3 @@
-.pg_mm_category_list_main {}
-
 .pg_mm_category_list_main .clear_float {
   content: "";
   clear: both;
@@ -100,7 +98,7 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-image: url(https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/folder.png);
-  padding-left: 25px;
+  padding-left: 27px;
 }
 
 .pg_mm_name_input {
