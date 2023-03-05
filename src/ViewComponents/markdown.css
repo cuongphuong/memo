@@ -20,7 +20,7 @@ body:not(.ready) [data-cloak] {
 
 .markdown-section {
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 900px;
     /* padding: 30px 15px 40px;
     position: relative */
 }

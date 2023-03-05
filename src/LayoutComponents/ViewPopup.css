@@ -30,7 +30,7 @@
 .pg_mm_view_delete_button {
   cursor: pointer;
   position: fixed;
-  top: 65px;
+  top: 72px;
   z-index: 2;
   background-color: rgb(169, 169, 169);
   padding: 5px;
@@ -38,7 +38,8 @@
 }
 
 .pg_mm_view_cls_button {
-  right: 150px;
+  /* right: 150px; */
+  right: 16px;
   background-color: rgb(243, 57, 57);
   color: #fff;
 }
