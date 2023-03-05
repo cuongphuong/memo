@@ -47,7 +47,7 @@ export default function Viewer(props) {
     }
 
     return (
-        <section className="section sec-html visible markdown-section">
+        <section className="section sec-html visible markdown-section pg_mm_container_view">
             <span onClick={onEdit} className="pg_mm_view_edit_button">Edit [/]</span>
             <span onClick={onDelete} className="pg_mm_view_delete_button">Delete [#]</span>
             {

@@ -41,6 +41,7 @@ export default function ViewPopup(props) {
                 : stype && !stype.animationName
                     ?
                     <img
+                        style={{ textAlign: 'center' }}
                         className="pg_mm_loadding"
                         height="50px"
                         src="https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/blue_loading.gif"

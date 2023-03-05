@@ -1,4 +1,4 @@
-.pg_mm_view_content li{
+.pg_mm_view_content li {
     line-height: 20px !important;
 }
 
@@ -7,4 +7,19 @@
     color: #34495e !important;
     text-transform: uppercase;
     font-size: 1.5rem !important;
+}
+
+.custom-html-style * {
+    font-size: 15px !important;
+}
+
+.pg_mm_title {
+    font-size: 1.5rem !important;
+}
+
+.custom-html-style li {
+    margin: 1em;
+    line-height: 1.7rem !important;
+    height: auto;
+    /* text-align: justify; */
 }

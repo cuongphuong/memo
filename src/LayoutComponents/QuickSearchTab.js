@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Layout from './Layout';
-import Viewer from '../ViewComponents/Viewer';
+import ViewPopup from './ViewPopup';
 import { ContentRender } from '../Utils/ContentRender';
-import List from '../ViewComponents/List';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import List from '../ViewComponents/List';
 import { setActiveId, setMdContent, setSearchResultList } from '../Actions/SearchReducer';
 import SearchHistoryCache from '../Utils/SearchHistoryCache';
 import { StringUtils } from '../Utils/StringUtils';
 import { useParams } from 'react-router-dom';
+import { useCallback } from 'react';
+
 
 function QuickSearchTab(props) {
     // use for control sync process
@@ -18,17 +20,25 @@ function QuickSearchTab(props) {
     // Logic state
     const dispatch = useDispatch();
     const searchResultList = useSelector(state => state.searchData.searchResultList);
-    const mdContent = useSelector(state => state.searchData.mdContent);
+    // const mdContent = useSelector(state => state.searchData.mdContent);
     const activeId = useSelector(state => state.searchData.activeId);
 
     // UI state
     const [isProcessing, setIsProcessing] = useState(false);
     const [searchCacheList, setSearchCacheList] = useState([]);
+    const [isDisplayPopup, setIsDisplayPopup] = React.useState("none");
+    const [dataView, setDataView] = React.useState(null);
     const inputObj = useRef(null);
     const typingTimer = useRef(null); // timer identifier 
     let doneTypingInterval = 600;  // time in ms (600ms)
 
     let { id } = useParams();
+
+    const handleChooseItem = useCallback((source) => {
+        dispatch(setActiveId(source.id));
+        dispatch(setMdContent(source));
+        handleItemClick(source.filePath)
+    }, [dispatch])
 
     useEffect(() => {
         async function searchByPramater() {
@@ -60,11 +70,13 @@ function QuickSearchTab(props) {
                 return;
             }
 
+            setIsProcessing(false);
+            handleChooseItem(contentObject)
+
             let tmpList = [];
             dispatch(setSearchResultList([...tmpList, contentObject]));
             dispatch(setActiveId(contentObject.id));
             dispatch(setMdContent(contentObject));
-            setIsProcessing(false);
         }
 
         refController.current = new AbortController();
@@ -75,10 +87,12 @@ function QuickSearchTab(props) {
         searchByPramater();
 
         return () => {
+            setIsDisplayPopup("none");
             window.history.replaceState("", "", "/memo");
             refController.current.abort();
         }
-    }, [dispatch, id])
+
+    }, [dispatch, id, handleChooseItem])
 
     function handleSearchChange(evt) {
         clearTimeout(typingTimer.current);
@@ -104,109 +118,118 @@ function QuickSearchTab(props) {
             SearchHistoryCache.insertKey(keyword);
             dispatch(setSearchResultList(apiResultContentList));
 
-            if (apiResultContentList.length > 0) {
-                handleChooseItem(apiResultContentList[0]);
-            }
+            // if (apiResultContentList.length > 0) {
+            //     handleChooseItem(apiResultContentList[0]);
+            // }
         }
         setIsProcessing(false);
     }
 
-    function handleChooseItem(source) {
-        dispatch(setActiveId(source.id));
-        dispatch(setMdContent(source));
-    }
+    // function onEdit(filePath) {
+    //     props.onEdit(filePath);
+    // }
 
-    function onEdit(filePath) {
-        props.onEdit(filePath);
-    }
+    // function onDelete(isSuccess) {
+    //     if (!isSuccess) {
+    //         alert("403 :((");
+    //         return;
+    //     }
 
-    function onDelete(isSuccess) {
-        if (!isSuccess) {
-            alert("403 :((");
-            return;
-        }
-
-        let newSearchList = searchResultList.filter(p => p.id !== mdContent.id);
-        dispatch(setMdContent(null));
-        dispatch(setSearchResultList(newSearchList));
-    }
+    //     let newSearchList = searchResultList.filter(p => p.id !== mdContent.id);
+    //     dispatch(setMdContent(null));
+    //     dispatch(setSearchResultList(newSearchList));
+    // }
 
     function renderSearchList() {
         return (
             <>
                 {
-                    searchResultList.length > 0 ?
-                        <List>
-                            {searchResultList.map((item, index) => <List.Item activeId={activeId}
-                                handleChooseItem={handleChooseItem}
-                                key={index}
-                                source={item}
-                            />)}
-                        </List>
-                        :
-                        <img className='unselectable' width="100%"
-                            src="/memo/icon/empty.png"
-                            alt="empty"
-                        />
-                }
-
-                {
                     isProcessing ?
-                        <div className="pg_mm_search_loadding">
-                            <img height="45px"
-                                style={{ position: 'absolute', top: 110 }}
+                        <div className="pg_mm_search_loadding" style={{ textAlign: "center" }}>
+                            <img height="100px"
                                 src="/memo/icon/blue_loading.gif"
                                 alt="loadding..."
                             />
                         </div>
                         :
-                        ''
+                        searchResultList.length > 0 ?
+                            <List>
+                                {searchResultList.map((item, index) => <List.Item activeId={activeId}
+                                    handleChooseItem={handleChooseItem}
+                                    key={index}
+                                    source={item}
+                                />)}
+                            </List>
+                            :
+                            <img className='unselectable' width="100%" style={{ opacity: 0.9 }}
+                                src="/memo/icon/empty.png"
+                                alt="empty"
+                            />
+
                 }
+
+
             </>
         )
     }
 
+    function handleItemClick(path) {
+        setIsDisplayPopup("block");
+        ContentRender.makeContentObject(path).then(data => {
+            setDataView(data);
+        });
+    }
+
+    function handleClosePopups() {
+        setTimeout(function () {
+            setIsDisplayPopup("none");
+        }, 100)
+        setDataView(null);
+    }
+
     return (
         <div className="pg_mm_amination">
-            <Layout.SiderBar>
-                <input
-                    list="cacheList"
-                    style={style.borderLine}
-                    ref={inputObj}
-                    onChange={(evt) => { handleSearchChange(evt) }}
-                    type="text"
-                    className="pg_mm_search_input"
-                    placeholder="Type for search..."
-                />
-                <img onClick={() => inputObj.current.value = ""}
+            <Layout.MiddleContent >
+
+                <div style={{ maxWidth: 800, margin: "0 auto", padding: "10px 5px" }}>
+                    <input
+                        list="cacheList"
+                        style={{ ...style.borderLine, marginBottom: 5 }}
+                        ref={inputObj}
+                        onChange={(evt) => { handleSearchChange(evt) }}
+                        type="text"
+                        className="pg_mm_search_input"
+                        placeholder="Type for search..."
+                    />
+                    {/* <img onClick={() => inputObj.current.value = ""}
+                    style={{ marginTop: 15, marginLeft: 10 }}
                     src='/memo/icon/clear.png'
                     width={25}
                     alt='copy'
                     className='pg_mm_fixed_clearinput'
-                />
-                <datalist id="cacheList">
-                    {searchCacheList.map((item, index) => <option key={index} value={item} />)}
-                </datalist>
-                <div style={{ marginTop: '5px' }}></div>
-                {renderSearchList()}
-            </Layout.SiderBar>
-            <Layout.RightContent>
-                {
-                    mdContent !== null ?
-                        <Viewer
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                            source={mdContent}
-                        /> : ""
-                }
+                /> */}
+                    <datalist id="cacheList">
+                        {searchCacheList.map((item, index) => <option key={index} value={item} />)}
+                    </datalist>
+                    <div style={{ marginTop: '5px' }}></div>
 
-                <div className='pg_mm_logo unselectable'>
-                    <img width="350px"
-                        src="/memo/icon/logo.png"
-                        alt="loadding..."
+
+                    {/* // Display search result */}
+                    {renderSearchList()}
+                </div>
+
+                {/* Popup view */}
+                <div className="pg_mm_view_popup_block">
+                    <ViewPopup
+                        onDelete={(isSuccess) => isSuccess ? setIsDisplayPopup("none") : props.onFailed("Settings")}
+                        onEdit={(filePath) => props.onEdit(filePath)}
+                        onClose={handleClosePopups}
+                        source={dataView}
+                        display={isDisplayPopup}
                     />
                 </div>
-            </Layout.RightContent>
+
+            </Layout.MiddleContent >
         </div>
     )
 }

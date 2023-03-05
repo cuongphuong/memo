@@ -177,15 +177,15 @@ function Row({ source = { name: "", path: "", type: "" }, handleItemClick }) {
     }
 
     return (
-        <dl className="link-list">
-            <dt
+        <div className="link-list">
+            <div
                 className="link-hd"
                 onClick={() => gotoPath(pathList.current[pathList.current.length - 1])}>{renderPathList()}
-            </dt>
-            <dd className="link-bd">
+            </div>
+            <div className="link-bd">
                 {renderItem()}
-            </dd>
-        </dl>
+            </div>
+        </div>
     )
 }
 
@@ -205,7 +205,7 @@ function Item(props) {
     }
 
     if (props.type === "dir") {
-        return (<span
+        return (<span className='pg_mm_folder_display'
             onClick={() => props.onClickSubFolder(props.name)}
             title="" >
             {props.name}

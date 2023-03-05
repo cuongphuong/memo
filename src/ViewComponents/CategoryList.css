@@ -32,62 +32,6 @@
   font-weight: 500;
 }
 
-.pg_mm_category_list_main .link-list {
-  display: block;
-  margin-inline-start: 40px;
-  width: 100%;
-  padding: 5px 0px;
-  margin: 5px 0px;
-  border-bottom: 1px dashed #eee;
-  overflow: hidden;
-  min-height: 30px;
-}
-
-.pg_mm_category_list_main .link-list:nth-last-child(1) {
-  border-bottom: none;
-}
-
-.pg_mm_category_list_main .link-list .link-hd {
-  display: block;
-  padding: 2px 0;
-  width: 150px;
-  max-width: 150px;
-  min-width: 150px;
-  background-color: #eee;
-  /* border-radius: 3px; */
-  color: #333;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-  float: left;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.pg_mm_category_list_main .link-list .link-bd {
-  margin-left: 170px;
-}
-
-.pg_mm_category_list_main .link-list .link-bd>p {
-  margin-bottom: 10px;
-}
-
-.pg_mm_category_list_main .link-list p,
-.pg_mm_category_list_main .link-list .link-bd span {
-  display: inline-block;
-  font-size: 15px;
-  margin: 0;
-  margin-right: 20px;
-  white-space: nowrap;
-  color: #555;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.pg_mm_category_list_main .link-list p:hover {
-  text-decoration: underline;
-}
-
 .pg_mm_category_list_main .link-list .link-bd span {
   /* background-color: #eee; */
   /* border-radius: 3px; */
@@ -99,6 +43,88 @@
   background-size: contain;
   background-image: url(https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/folder.png);
   padding-left: 27px;
+}
+
+.pg_mm_folder_display {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.link-hd {
+  background-color: #eee;
+  color: #333;
+  padding: 3px 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.link-bd {
+  padding: 3px 5px;
+}
+
+.pg_mm_category_list_main .link-list .link-bd>p {
+  margin-bottom: 10px;
+}
+
+.pg_mm_category_list_main .link-list p,
+.pg_mm_category_list_main .link-list .link-bd span {
+  white-space: nowrap;
+  color: #555;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.pg_mm_category_list_main .link-list p:hover {
+  text-decoration: underline;
+}
+
+
+@media (min-width: 600px) {
+  .pg_mm_category_list_main .link-list {
+    display: block;
+    margin-inline-start: 40px;
+    width: 100%;
+    padding: 5px 0px;
+    margin: 5px 0px;
+    border-bottom: 1px dashed #eee;
+    overflow: hidden;
+    min-height: 30px;
+  }
+
+  .pg_mm_category_list_main .link-list:nth-last-child(1) {
+    border-bottom: none;
+  }
+
+  .pg_mm_category_list_main .link-list .link-hd {
+    padding: 2px 0px;
+    width: 150px;
+    max-width: 150px;
+    min-width: 150px;
+    text-align: center;
+    float: left;
+  }
+
+  .link-bd {
+    padding: 0 0;
+  }
+
+  .pg_mm_category_list_main .link-list p,
+  .pg_mm_category_list_main .link-list .link-bd span {
+    display: inline-block;
+    margin: 0;
+    margin-right: 20px;
+
+  }
+
+  .pg_mm_category_list_main .link-list .link-bd {
+    margin-left: 170px;
+  }
 }
 
 .pg_mm_name_input {
@@ -114,6 +140,7 @@
   overflow: hidden;
   display: inline-block;
   /* margin-right: 5px; */
+  font-weight: bold;
 }
 
 .pg_mm_path_item::after {
