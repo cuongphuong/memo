@@ -59,7 +59,7 @@
   padding: 3px 5px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   overflow: hidden;
 }
 
@@ -77,7 +77,7 @@
   color: #555;
   text-decoration: none;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .pg_mm_category_list_main .link-list p:hover {

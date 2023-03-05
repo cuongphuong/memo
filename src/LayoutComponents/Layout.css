@@ -51,7 +51,7 @@ input::-webkit-calendar-picker-indicator {
 .pg_mm_left,
 .pg_mm_right,
 .pg_mm_mid {
-  padding: 5px;
+  /* padding: 5px; */
   min-height: calc(100vh - 60px);
   max-height: calc(100vh - 60px);
   box-sizing: border-box;
@@ -148,8 +148,8 @@ input::-webkit-calendar-picker-indicator {
 /* QuickSearch list */
 .pg_mm_list {
   padding: 2px;
-  height: calc(100vh - 130px);
-  overflow: scroll;
+  /* min-height: calc(100vh); */
+  /* overflow: scroll; */
 }
 
 .pg_mm_trunc {
@@ -171,7 +171,7 @@ input::-webkit-calendar-picker-indicator {
 
 .pg_mm_list_item:hover,
 .pg_mm_list_item_active {
-  background-color: hsl(0,0%,96.5%);
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   color: hsl(210,8%,15%);
 }
@@ -184,13 +184,13 @@ input::-webkit-calendar-picker-indicator {
 
 .pg_mm_list_item > h3 {
   -webkit-line-clamp: 2;
-  font-size: 15px;
+  font-size: 16px;
   color: rgb(51, 51, 51);
   padding: 2px;
 }
 
 .pg_mm_list_item > p {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .pg_mm_list_item > .pg_mm_list_item_info {

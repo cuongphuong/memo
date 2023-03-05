@@ -10,6 +10,7 @@ import SearchHistoryCache from '../Utils/SearchHistoryCache';
 import { StringUtils } from '../Utils/StringUtils';
 import { useParams } from 'react-router-dom';
 import { useCallback } from 'react';
+import "./QuickSearchTab.css";
 
 
 function QuickSearchTab(props) {
@@ -25,6 +26,7 @@ function QuickSearchTab(props) {
 
     // UI state
     const [isProcessing, setIsProcessing] = useState(false);
+    const [inputValue, setInputValue] = useState("");
     const [searchCacheList, setSearchCacheList] = useState([]);
     const [isDisplayPopup, setIsDisplayPopup] = React.useState("none");
     const [dataView, setDataView] = React.useState(null);
@@ -95,6 +97,7 @@ function QuickSearchTab(props) {
     }, [dispatch, id, handleChooseItem])
 
     function handleSearchChange(evt) {
+        setInputValue(evt.target.value)
         clearTimeout(typingTimer.current);
         //
         refController.current = new AbortController();
@@ -188,11 +191,11 @@ function QuickSearchTab(props) {
     }
 
     return (
-        <div className="pg_mm_amination">
+        <div className="pg_mm_amination" style={{ backgroundColor: "#fff" }}>
             <Layout.MiddleContent >
 
-                <div style={{ maxWidth: 800, margin: "0 auto", padding: "10px 5px" }}>
-                    <input
+                <div style={{ maxWidth: 900, margin: "0 auto", padding: "10px 5px", backgroundColor: "rgba(251, 187, 167, 0.2)", minHeight: "calc(100vh - 80px)" }}>
+                    {/* <input
                         list="cacheList"
                         style={{ ...style.borderLine, marginBottom: 5 }}
                         ref={inputObj}
@@ -200,14 +203,29 @@ function QuickSearchTab(props) {
                         type="text"
                         className="pg_mm_search_input"
                         placeholder="Type for search..."
-                    />
+                    /> */}
+
+                    <div className='input-wrapper'>
+                        <input
+                            ref={inputObj}
+                            onChange={(evt) => { handleSearchChange(evt) }}
+                            placeholder="Search..."
+                            value={inputValue}
+                            spellCheck={false}
+                        />
+                        <span className='input-highlight'>
+                            {inputValue.replace(/ /g, "\u00a0")}
+                        </span>
+                    </div>
+
+
+
                     {/* <img onClick={() => inputObj.current.value = ""}
                     style={{ marginTop: 15, marginLeft: 10 }}
                     src='/memo/icon/clear.png'
                     width={25}
                     alt='copy'
-                    className='pg_mm_fixed_clearinput'
-                /> */}
+                    className='pg_mm_fixed_clearinput'/> */}
                     <datalist id="cacheList">
                         {searchCacheList.map((item, index) => <option key={index} value={item} />)}
                     </datalist>
