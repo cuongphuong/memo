@@ -1,11 +1,11 @@
 
-.input-wrapper {
+.pg_mm_input-wrapper {
     position: relative;
     width: 500px;
     margin: 10px auto;
 }
 
-.input-highlight {
+.pg_mm_input-highlight {
     font-size: 20px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -22,7 +22,7 @@
     overflow: hidden;
 }
 
-input {
+.pg_mm_input-wrapper > input {
     height: 40px;
     width: 100%;
     min-width: 100%;
@@ -40,7 +40,7 @@ input {
     /* text-align: center; */
 }
 
-input:focus+.input-highlight {
+.pg_mm_input-wrapper > input:focus+.input-highlight {
     border-top: 2px solid #b12900;
     padding-left: 10px;
 }

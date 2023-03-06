@@ -203,7 +203,7 @@ function QuickSearchTab(props) {
                         placeholder="Type for search..."
                     /> */}
 
-                    <div className='input-wrapper'>
+                    <div className='pg_mm_input-wrapper'>
                         <input
                             ref={inputObj}
                             onChange={(evt) => { handleSearchChange(evt) }}
@@ -211,7 +211,7 @@ function QuickSearchTab(props) {
                             value={inputValue}
                             spellCheck={false}
                         />
-                        <span className='input-highlight'>
+                        <span className='pg_mm_input-highlight'>
                             {inputValue.replace(/ /g, "\u00a0")}
                         </span>
                     </div>
