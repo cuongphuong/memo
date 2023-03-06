@@ -20,6 +20,8 @@ export default function App() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/auth" element={<GithubAuthenticate />} />
+            <Route path="/write" element={<WriterTab />} />
+            <Route path="/setting" element={<SettingsTab />} />
             <Route path="/get/:id" element={<HomePage />} />
         </Routes>
     )

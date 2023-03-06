@@ -25,44 +25,72 @@
   animation-duration: 0.2s;
 }
 
-.pg_mm_view_cls_button,
-.pg_mm_view_edit_button,
-.pg_mm_view_delete_button {
+.pg_mm_view_cls_button {
+  background-color: rgb(245, 109, 109);
+  color: #fff;
   cursor: pointer;
   position: fixed;
-  top: 72px;
+  bottom: 50px;
+  right: 20px;
+  border-radius: 100%;
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 50px;
   z-index: 2;
-  background-color: rgb(169, 169, 169);
-  padding: 5px;
-  color: rgb(70, 70, 70);
+  transition: all 0.3s ease-in-out;
 }
 
-.pg_mm_view_cls_button {
-  /* right: 150px; */
-  right: 16px;
-  background-color: rgb(243, 57, 57);
-  color: #fff;
-}
-
-.pg_mm_view_edit_button {
-  right: 95px;
-}
-
-.pg_mm_view_delete_button {
-  right: 16px;
+.pg_mm_view_cls_button::after {
+  content: "ｘ";
 }
 
 .pg_mm_view_cls_button:hover {
   background-color: rgb(255, 123, 0);
+  transform: rotate(360deg) scale(1.2);
 }
 
-.pg_mm_view_edit_button:hover {
-  background-color: rgb(0, 187, 115);
+@media (min-width: 600px) {
+
+  .pg_mm_view_cls_button,
+  .pg_mm_view_edit_button,
+  .pg_mm_view_delete_button {
+    display: inline;
+    cursor: pointer;
+    position: fixed;
+    top: 65px;
+    z-index: 2;
+    background-color: rgb(245, 109, 109);
+    color: rgb(70, 70, 70);
+    margin-top: 0 !important;
+    line-height: 50px;
+  }
+
+  .pg_mm_view_cls_button {
+    /* right: 150px; */
+    right: 16px;
+    color: #fff;
+  }
+
+  .pg_mm_view_edit_button {
+    right: 95px;
+  }
+
+  .pg_mm_view_delete_button {
+    right: 16px;
+  }
+
+  .pg_mm_view_edit_button:hover {
+    background-color: rgb(0, 187, 115);
+  }
+
+  .pg_mm_view_delete_button:hover {
+    background-color: rgb(255, 0, 0);
+  }
+
 }
 
-.pg_mm_view_delete_button:hover {
-  background-color: rgb(255, 0, 0);
-}
+
 
 @keyframes open {
   0% {

@@ -16,7 +16,7 @@ import "./QuickSearchTab.css";
 function QuickSearchTab(props) {
     // use for control sync process
     const refController = React.useRef(null);
-    const style = useSelector(state => state.style);
+    // const style = useSelector(state => state.style);
 
     // Logic state
     const dispatch = useDispatch();
@@ -164,14 +164,12 @@ function QuickSearchTab(props) {
                                 />)}
                             </List>
                             :
-                            <img className='unselectable' width="100%" style={{ opacity: 0.9 }}
-                                src="/memo/icon/empty.png"
-                                alt="empty"
-                            />
-
+                            // <img className='unselectable' width="100%" style={{ opacity: 0.9 }}
+                            //     src="/memo/icon/empty.png"
+                            //     alt="empty"
+                            // />
+                          ''
                 }
-
-
             </>
         )
     }
@@ -194,7 +192,7 @@ function QuickSearchTab(props) {
         <div className="pg_mm_amination" style={{ backgroundColor: "#fff" }}>
             <Layout.MiddleContent >
 
-                <div style={{ maxWidth: 900, margin: "0 auto", padding: "10px 5px", backgroundColor: "rgba(251, 187, 167, 0.2)", minHeight: "calc(100vh - 80px)" }}>
+                <div style={{ maxWidth: 900, margin: "0 auto", padding: "10px 5px", backgroundColor: "rgba(246, 246, 246, 1)", minHeight: "calc(100vh - 80px)" }}>
                     {/* <input
                         list="cacheList"
                         style={{ ...style.borderLine, marginBottom: 5 }}
@@ -209,7 +207,7 @@ function QuickSearchTab(props) {
                         <input
                             ref={inputObj}
                             onChange={(evt) => { handleSearchChange(evt) }}
-                            placeholder="Search..."
+                            placeholder="Search something..."
                             value={inputValue}
                             spellCheck={false}
                         />

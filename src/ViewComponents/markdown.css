@@ -30,10 +30,6 @@ body:not(.ready) [data-cloak] {
     font-size: inherit
 }
 
-.markdown-section>:first-child {
-    margin-top: 0 !important
-}
-
 .markdown-section hr {
     border: none;
     border-bottom: 1px solid #eee;

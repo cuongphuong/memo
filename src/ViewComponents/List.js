@@ -43,7 +43,7 @@ function ListItem({ source = {
             className={isActive() ? "pg_mm_list_item pg_mm_list_item_active" : "pg_mm_list_item"}
             onClick={handleClick}
         >
-            <h3 style={{ color: "hsl(210,8%,25%)", fontSize: 20 }} className="pg_mm_trunc">{source.title}</h3>
+            <h3 style={{ color: "hsl(210,8%,25%)", fontSize: 17 }} className="pg_mm_trunc">{source.title}</h3>
             <p className="pg_mm_trunc" style={{ fontSize: 16, lineHeight: 1.5 }}>{removeMd(source.content).replace(/(?:\r\n|\r|\n)/g, ' ')}</p>
             {/* <div className="pg_mm_list_item_info">
                 <span

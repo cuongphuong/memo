@@ -1,6 +1,6 @@
 import React from 'react'
 import { NotificationManager } from 'react-notifications';
-import { deleteFile } from '../Utils/GithubCRUD';
+// import { deleteFile } from '../Utils/GithubCRUD';
 // import renderHTML from 'react-render-html';
 import "./Viewer.css";
 import "./markdown.css";
@@ -17,22 +17,22 @@ export default function Viewer(props) {
         setContent(source.content)
     }, [props.isPopupView, source.content])
 
-    function onEdit() {
-        props.onEdit(props.source.filePath);
-    }
+    // function onEdit() {
+    //     props.onEdit(props.source.filePath);
+    // }
 
-    async function onDelete() {
-        if (!window.confirm("Do you want to delete " + props.source.filePath) === true) {
-            return;
-        }
-        try {
-            await deleteFile(props.source.filePath);
-            NotificationManager.info("Deleted.");
-            props.onDelete(true);
-        } catch (err) {
-            props.onDelete(false);
-        }
-    }
+    // async function onDelete() {
+    //     if (!window.confirm("Do you want to delete " + props.source.filePath) === true) {
+    //         return;
+    //     }
+    //     try {
+    //         await deleteFile(props.source.filePath);
+    //         NotificationManager.info("Deleted.");
+    //         props.onDelete(true);
+    //     } catch (err) {
+    //         props.onDelete(false);
+    //     }
+    // }
 
     async function handleCopyLink() {
         // Make link
@@ -52,7 +52,7 @@ export default function Viewer(props) {
             <span onClick={onDelete} className="pg_mm_view_delete_button">Delete [#]</span> */}
             {
                 props.isPopupView ?
-                    <span onClick={() => { props.onClose() }} className="pg_mm_view_cls_button">Close [x]</span>
+                    <span onClick={() => { props.onClose() }} className="pg_mm_view_cls_button"></span>
                     :
                     ""
             }
