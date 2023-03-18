@@ -76,93 +76,95 @@ export default function SettingsTab() {
 
     return (
         <div className="pg_mm_amination">
-            <Layout.MiddleContent >
-                <h3 className='pg_mm_settings_area'>Data settings</h3>
-                <input
-                    ref={urlRepositoryInput}
-                    className='pg_mm_settings_input'
-                    placeholder='URL to repository...'
-                    defaultValue="https://github.com/cuongphuong/memo_data"
-                />
+            <Layout.MiddleContent>
+                <div style={{padding: 10}}>
+                    <h3 className='pg_mm_settings_area'>Data settings</h3>
+                    <input
+                        ref={urlRepositoryInput}
+                        className='pg_mm_settings_input'
+                        placeholder='URL to repository...'
+                        defaultValue="https://github.com/cuongphuong/memo_data"
+                    />
 
-                <br />
-                <input
-                    type="number"
-                    ref={cacheTimeDayInput}
-                    className='pg_mm_settings_input'
-                    placeholder='Cache time (ms)...'
-                    defaultValue="10"
-                />
+                    <br />
+                    <input
+                        type="number"
+                        ref={cacheTimeDayInput}
+                        className='pg_mm_settings_input'
+                        placeholder='Cache time (ms)...'
+                        defaultValue="10"
+                    />
 
-                <br />
-                <input
-                    type="number"
-                    ref={requestTimeoutInput}
-                    className='pg_mm_settings_input'
-                    placeholder='Request timeout (ms)...'
-                    defaultValue="5000"
-                />
+                    <br />
+                    <input
+                        type="number"
+                        ref={requestTimeoutInput}
+                        className='pg_mm_settings_input'
+                        placeholder='Request timeout (ms)...'
+                        defaultValue="5000"
+                    />
 
-                <h3 className='pg_mm_settings_area'>Github account setting</h3>
+                    <h3 className='pg_mm_settings_area'>Github account setting</h3>
 
-                <input
-                    type={isView ? "text" : "password"}
-                    ref={accessKeyInput}
-                    className='pg_mm_settings_input'
-                    placeholder='Access key (if private repository)...'
-                />
-                <span className='pg_mm_show_accesskey'>
-                    {
-                        !isView ?
-                            <FontAwesomeIcon icon={faEyeSlash} onClick={() => setIsView(true)} />
-                            :
-                            <FontAwesomeIcon icon={faEye} onClick={() => setIsView(false)} />
+                    <input
+                        type={isView ? "text" : "password"}
+                        ref={accessKeyInput}
+                        className='pg_mm_settings_input'
+                        placeholder='Access key (if private repository)...'
+                    />
+                    <span className='pg_mm_show_accesskey'>
+                        {
+                            !isView ?
+                                <FontAwesomeIcon icon={faEyeSlash} onClick={() => setIsView(true)} />
+                                :
+                                <FontAwesomeIcon icon={faEye} onClick={() => setIsView(false)} />
+                        }
+                    </span>
+
+                    <br />
+                    <input
+                        ref={userNameInput}
+                        className='pg_mm_settings_input'
+                        placeholder='Username github...'
+                    />
+
+                    <br />
+                    <input
+                        ref={emailInput}
+                        className='pg_mm_settings_input'
+                        placeholder='Email...'
+                    />
+
+                    {/*  Avatar */}
+                    {SettingsCache.getAvatarUrl() ? <> <br /><img style={style.button} width={50} ref={avatarViewer} alt="avatar"></img></> : ""}
+                    <br />
+                    <button
+                        style={style.button}
+                        onClick={handleSave}
+                        className='pg_mm_settings_submit'>
+                        <FontAwesomeIcon icon={faSave} />
+                        <span>  Save</span>
+                    </button>
+
+                    {SettingsCache.getAccessKey() ?
+                        <button
+                            style={style.button}
+                            onClick={(logout)}
+                            className='pg_mm_settings_submit'>
+                            <FontAwesomeIcon icon={faArrowAltCircleRight} />
+                            <span>  Logout</span>
+                        </button>
+                        :
+                        <button
+                            style={style.button}
+                            onClick={(handleAuthen)}
+                            className='pg_mm_settings_submit'>
+                            <FontAwesomeIcon icon={faGithub} />
+                            <span>  GitHub identity</span>
+                        </button>
                     }
-                </span>
-
-                <br />
-                <input
-                    ref={userNameInput}
-                    className='pg_mm_settings_input'
-                    placeholder='Username github...'
-                />
-
-                <br />
-                <input
-                    ref={emailInput}
-                    className='pg_mm_settings_input'
-                    placeholder='Email...'
-                />
-
-                {/*  Avatar */}
-                {SettingsCache.getAvatarUrl() ? <> <br /><img style={style.button} width={50} ref={avatarViewer} alt="avatar"></img></> : ""}
-                <br />
-                <button
-                    style={style.button}
-                    onClick={handleSave}
-                    className='pg_mm_settings_submit'>
-                    <FontAwesomeIcon icon={faSave} />
-                    <span>  Save</span>
-                </button>
-
-                {SettingsCache.getAccessKey() ?
-                    <button
-                        style={style.button}
-                        onClick={(logout)}
-                        className='pg_mm_settings_submit'>
-                        <FontAwesomeIcon icon={faArrowAltCircleRight} />
-                        <span>  Logout</span>
-                    </button>
-                    :
-                    <button
-                        style={style.button}
-                        onClick={(handleAuthen)}
-                        className='pg_mm_settings_submit'>
-                        <FontAwesomeIcon icon={faGithub} />
-                        <span>  GitHub identity</span>
-                    </button>
-                }
-                <font color="#ddd">(©2022 CuongPV10 - v1.0.1)</font>
+                    <font color="#ddd">(©2022 CuongPV10 - v1.0.1)</font>
+                </div>
             </Layout.MiddleContent>
         </div>
     )

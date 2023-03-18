@@ -18,11 +18,11 @@ import GithubAuthenticate from './LayoutComponents/GithubAuthenticate';
 export default function App() {
     return (
         <Routes>
+            <Route exact path="/auth" element={<GithubAuthenticate />} />
+            <Route exact path="/write" element={<WriterTab />} />
+            <Route exact path="/setting" element={<SettingsTab />} />
+            <Route exact path="/get/:id" element={<HomePage />} />
             <Route path="/" element={<HomePage />} />
-            <Route path="/auth" element={<GithubAuthenticate />} />
-            <Route path="/write" element={<WriterTab />} />
-            <Route path="/setting" element={<SettingsTab />} />
-            <Route path="/get/:id" element={<HomePage />} />
         </Routes>
     )
 }
@@ -30,6 +30,7 @@ export default function App() {
 function HomePage() {
     // const menuList = ["Search", "List", "Write"];
     const menuList = ["Search", "List"];
+
     // state
     const [selectedMenu, setSelectedMenu] = React.useState(menuList[1]);
     const viewContentObj = React.useRef(null);
@@ -71,7 +72,6 @@ function HomePage() {
             }
         }
         /*--------------- /Define function inside useEffect -------------------*/
-
 
     }, [dispatch, id]);
 

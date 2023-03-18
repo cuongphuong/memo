@@ -48,14 +48,14 @@ export default function Viewer(props) {
 
     return (
         <section className="section sec-html visible markdown-section pg_mm_container_view">
-            {/* <span onClick={onEdit} className="pg_mm_view_edit_button">Edit [/]</span>
-            <span onClick={onDelete} className="pg_mm_view_delete_button">Delete [#]</span> */}
-            {
-                props.isPopupView ?
+            <div className='pg_mm_button_group'>
+                <div className='pg_mm_button_group_main' style={{ height: '100%', position: 'relative' }}>
+                    <span onClick={() => { props.onClose() }} className="pg_mm_view_del_button"></span>
+                    <span onClick={() => { props.onClose() }} className="pg_mm_view_edit_button"></span>
                     <span onClick={() => { props.onClose() }} className="pg_mm_view_cls_button"></span>
-                    :
-                    ""
-            }
+                </div>
+            </div>
+
             <div className="section-container html-wrap">
                 <div className="custom-html-style">
                     <h2 className='pg_mm_title'>

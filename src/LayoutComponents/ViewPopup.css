@@ -25,21 +25,48 @@
   animation-duration: 0.2s;
 }
 
-.pg_mm_view_cls_button {
-  background-color: rgb(245, 109, 109);
-  color: #fff;
-  cursor: pointer;
+.pg_mm_button_group {
   position: fixed;
   bottom: 50px;
   right: 20px;
+  z-index: 2;
+  height: 150px;
+  width: 50px;
+}
+
+.pg_mm_view_cls_button {
+  display: block;
+  background-color: rgb(245, 109, 109);
+  color: #fff;
+  cursor: pointer;
   border-radius: 100%;
   height: 50px;
   width: 50px;
   text-align: center;
   line-height: 50px;
-  z-index: 2;
+  position: absolute;
+  bottom: 0;
   transition: all 0.3s ease-in-out;
+  z-index: 2;
 }
+
+.pg_mm_view_edit_button, .pg_mm_view_del_button {
+  color: #fff;
+  cursor: pointer;
+  bottom: 0;
+  right: 26px;
+  border-radius: 100%;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  line-height: 40px;
+  z-index: 0;
+  position: absolute;
+  bottom: 0;
+  right: 6px;
+  transition: transform 0.3s ease;
+}
+
 
 .pg_mm_view_cls_button::after {
   content: "ｘ";
@@ -47,47 +74,98 @@
 
 .pg_mm_view_cls_button:hover {
   background-color: rgb(255, 123, 0);
-  transform: rotate(360deg) scale(1.2);
+  transform: rotate(360deg) scale(1.1);
 }
+
+.pg_mm_view_edit_button {
+  background-color: rgb(151, 189, 231);
+}
+
+.pg_mm_view_del_button {
+  background-color: rgb(228, 12, 12);
+}
+
+.pg_mm_button_group_main:hover>.pg_mm_view_edit_button {
+  display: block;
+  transform: translateY(-56px);
+  z-index: 1;
+}
+
+.pg_mm_button_group_main:hover>.pg_mm_view_del_button {
+  display: block;
+  transform: translateY(-100px);
+  z-index: 1;
+}
+
+.pg_mm_view_edit_button:hover, .pg_mm_view_del_button:hover {
+  background-color: rgb(84, 148, 243);
+}
+
+.pg_mm_view_del_button::after {
+  content: "🗑";
+}
+
+.pg_mm_view_edit_button::after {
+  content: "🖉";
+}
+
 
 @media (min-width: 600px) {
 
-  .pg_mm_view_cls_button,
-  .pg_mm_view_edit_button,
-  .pg_mm_view_delete_button {
-    display: inline;
-    cursor: pointer;
+  .pg_mm_button_group {
     position: fixed;
     top: 65px;
+    right: 10px;
     z-index: 2;
-    background-color: rgb(245, 109, 109);
-    color: rgb(70, 70, 70);
-    margin-top: 0 !important;
-    line-height: 50px;
+    height: 50px;
+    width: 150px;
+    text-align: right;
   }
 
   .pg_mm_view_cls_button {
-    /* right: 150px; */
-    right: 16px;
+    display: block;
+    background-color: rgb(245, 109, 109);
     color: #fff;
+    cursor: pointer;
+    border-radius: 100%;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    line-height: 50px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transition: all 0.3s ease-in-out;
+    z-index: 2;
+  }
+  
+  .pg_mm_view_edit_button, .pg_mm_view_del_button {
+    color: #fff;
+    cursor: pointer;
+    right: 26px;
+    border-radius: 100%;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    line-height: 40px;
+    z-index: 0;
+    position: absolute;
+    bottom: 3px;
+    right: 6px;
+    transition: transform 0.3s ease;
   }
 
-  .pg_mm_view_edit_button {
-    right: 95px;
+  .pg_mm_button_group_main:hover>.pg_mm_view_edit_button {
+    display: block;
+    transform: translateX(-52px);
+    z-index: 1;
   }
-
-  .pg_mm_view_delete_button {
-    right: 16px;
+  
+  .pg_mm_button_group_main:hover>.pg_mm_view_del_button {
+    display: block;
+    transform: translateX(-100px);
+    z-index: 1;
   }
-
-  .pg_mm_view_edit_button:hover {
-    background-color: rgb(0, 187, 115);
-  }
-
-  .pg_mm_view_delete_button:hover {
-    background-color: rgb(255, 0, 0);
-  }
-
 }
 
 

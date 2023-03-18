@@ -17,6 +17,7 @@ import ContentWriterCache from '../Utils/ContentWriterCache';
 export default function WriterTab(props) {
     // Use for control sync process
     const refController = React.useRef(null);
+
     // Use for store data
     const mdParser = new MarkdownIt();
     const [content, setContent] = useState("");
