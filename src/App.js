@@ -28,8 +28,10 @@ export default function App() {
 }
 
 function HomePage() {
-    // const menuList = ["Search", "List", "Write"];
-    const menuList = ["Search", "List"];
+
+    const token = SettingsCache.getAccessKey();
+    const menuList = (token && token.length > 0) ? ["Search", "List", "Write"] : ["Search", "List"];
+    // const menuList = ["Search", "List"];
 
     // state
     const [selectedMenu, setSelectedMenu] = React.useState(menuList[1]);

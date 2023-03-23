@@ -1,38 +1,40 @@
 import React from 'react'
 import { NotificationManager } from 'react-notifications';
-// import { deleteFile } from '../Utils/GithubCRUD';
+import { deleteFile } from '../Utils/GithubCRUD';
 // import renderHTML from 'react-render-html';
 import "./Viewer.css";
 import "./markdown.css";
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeHighlight from 'rehype-highlight'
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import SettingsCache from '../Utils/SettingsCache';
 
 export default function Viewer(props) {
 
     const [content, setContent] = React.useState(`Just a link: https://reactjs.com.`);
     let { source } = props;
+    const token = SettingsCache.getAccessKey();
 
     React.useEffect(() => {
         setContent(source.content)
     }, [props.isPopupView, source.content])
 
-    // function onEdit() {
-    //     props.onEdit(props.source.filePath);
-    // }
+    function onEdit() {
+        props.onEdit(props.source.filePath);
+    }
 
-    // async function onDelete() {
-    //     if (!window.confirm("Do you want to delete " + props.source.filePath) === true) {
-    //         return;
-    //     }
-    //     try {
-    //         await deleteFile(props.source.filePath);
-    //         NotificationManager.info("Deleted.");
-    //         props.onDelete(true);
-    //     } catch (err) {
-    //         props.onDelete(false);
-    //     }
-    // }
+    async function onDelete() {
+        if (!window.confirm("Do you want to delete " + props.source.filePath) === true) {
+            return;
+        }
+        try {
+            await deleteFile(props.source.filePath);
+            NotificationManager.info("Deleted.");
+            props.onDelete(true);
+        } catch (err) {
+            props.onDelete(false);
+        }
+    }
 
     async function handleCopyLink() {
         // Make link
@@ -50,8 +52,14 @@ export default function Viewer(props) {
         <section className="section sec-html visible markdown-section pg_mm_container_view">
             <div className='pg_mm_button_group'>
                 <div className='pg_mm_button_group_main' style={{ height: '100%', position: 'relative' }}>
-                    <span onClick={() => { props.onClose() }} className="pg_mm_view_del_button"></span>
-                    <span onClick={() => { props.onClose() }} className="pg_mm_view_edit_button"></span>
+                    {
+                        (token && token.length) > 0 ? <>
+                            <span onClick={onDelete} className="pg_mm_view_del_button"></span>
+                            <span onClick={onEdit} className="pg_mm_view_edit_button"></span>
+                        </>
+                        :
+                        ""
+                    }
                     <span onClick={() => { props.onClose() }} className="pg_mm_view_cls_button"></span>
                 </div>
             </div>

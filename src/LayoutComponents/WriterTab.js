@@ -232,7 +232,7 @@ export default function WriterTab(props) {
     }
 
     return (
-        <div className="pg_mm_amination">
+        <div className="pg_mm_amination" style={{padding: "10px 5px"}}>
             <Layout.MiddleContent>
                 <>
                     <div style={{ width: "85%", height: 90, float: 'left' }}>
