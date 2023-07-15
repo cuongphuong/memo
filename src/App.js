@@ -130,6 +130,8 @@ function HomePage() {
                     title="Settings"
                 /> */}
 
+                <Layout.Header.Item key="Icon" title="Icon" onClick={() => window.location.href = 'http://github.com/cuongphuong'}/>
+
                 {menuList.map(item => item !== "Setting" ? (
                     <Layout.Header.Item
                         key={item}

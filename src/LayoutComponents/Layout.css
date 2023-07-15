@@ -330,13 +330,15 @@ button {
   transition: 0.2s ease-in-out all;
   width: 50px;
   overflow: hidden;
-  height: 15px;
+  height: 12px;
   font-size: 12px;
+  border-radius: 20px;
+  padding-left: 10px;
 }
 
 .pg_mm_reload_button:hover {
   /* box-shadow: 1px 1px 5px rgb(162, 162, 162); */
-  width: 160px;
+  width: 190px;
 }
 
 .pg_mm_reload_button:hover span {

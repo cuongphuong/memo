@@ -44,6 +44,10 @@ const HeaderItem = ({ onClick, title, selected }) => {
         return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item unselectable'><FontAwesomeIcon icon={faGear} /></p>
     }
 
+    if (title === "Icon") {
+        return <p onClick={() => onClick(title)} className='pg_mm_settings_menu_item unselectable'><img alt="github" width={40} style={{marginTop: 5, marginRight: 10}} src='https://raw.githubusercontent.com/cuongphuong/memo/master/public/icon/github-logo.png'></img></p>
+    }
+
     return (
         <li>
             <span
